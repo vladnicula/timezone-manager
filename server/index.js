@@ -1,13 +1,9 @@
 import setup from './setup'
 
-const APP_PORT = parseInt(process.env.APP_PORT,10) || 3185
-const APP_HOST = process.env.APP_HOST || 'localhost'
+import * as config from './config'
 
-setup({
-  APP_PORT,
-  APP_HOST
-}).then((app)=>{
-  app.listen(APP_PORT, APP_HOST, () => {  
-    console.log(`[Media Service]: startup complete. Listening on  ${APP_HOST}:${APP_PORT}!`)
+setup(config).then((app)=>{
+  app.listen(config.APP_PORT, config.APP_HOST, () => {  
+    console.log(`[Media Service]: startup complete. Listening on  ${config.APP_HOST}:${config.APP_PORT}!`)
   })
 })

@@ -8,8 +8,11 @@
 - frontend with react + redux
 - frontend build system via webpack 2.x + babel 
 
+Will asume usage of yarn not npm from now on.
+
 #Development setup
-TODO
+- yarn install
+- yarn start-server-dev stars the development backend server 
 
 #Production setup
 TODO
