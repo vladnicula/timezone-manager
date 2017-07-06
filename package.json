@@ -2,5 +2,8 @@
   "name": "timezone-manager",
   "version": "1.0.0",
   "description": "App that shows time in different timezones",
-  "author": "Vlad Nicula <vladnicula@gmail.com>"
+  "author": "Vlad Nicula <vladnicula@gmail.com>",
+  "dependencies": {
+    "express": "^4.15.3"
+  }
 }
