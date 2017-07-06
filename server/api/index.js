@@ -1,3 +1,5 @@
-export default function (app) {
-  console.log('api endpoints hookup function')
+import users from './users'
+
+export default function (app, mongoose) {
+  app.use('/api/v1/user', users(mongoose))
 }

@@ -12,6 +12,7 @@
     "express": "^4.15.3",
     "jsonwebtoken": "^7.4.1",
     "mongoose": "^4.11.1",
+    "mongoose-fixtures": "^0.0.1",
     "morgan": "^1.8.2"
   },
   "devDependencies": {
