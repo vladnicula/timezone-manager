@@ -4,6 +4,6 @@ import * as config from './config'
 
 setup(config).then((app)=>{
   app.listen(config.APP_PORT, config.APP_HOST, () => {  
-    console.log(`[Media Service]: startup complete. Listening on  ${config.APP_HOST}:${config.APP_PORT}!`)
+    console.log(`[Timezone Manager]: startup complete. Listening on  ${config.APP_HOST}:${config.APP_PORT}!`)
   })
 })
