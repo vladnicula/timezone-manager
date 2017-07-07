@@ -8,8 +8,6 @@
  * document with more complicated entities.
  */
 
-const USERS = [
-    { username: 'admin', password:'1234', role: 2 }
-]
+const USERS = [{ username: "admin", password: "1234", role: 2 }]
 
 export default USERS

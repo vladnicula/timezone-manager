@@ -3,7 +3,7 @@
  * Sets up a development environment with basic data.
  */
 import UsersData from './Users'
-import User from '../../models/user' 
+import User from '../../models/user'
 
 /**
  * Drops a collection from mongo if it exists in the current
@@ -11,12 +11,12 @@ import User from '../../models/user'
  */
 const dropMongoCollection = (mongoose, name) => {
   const targetCollection = mongoose.connection.collections[name.toLowerCase()]
-  if ( !targetCollection ) {
+  if (!targetCollection) {
     return Promise.resolve()
   }
-  return new Promise((resolve, reject)=>{
-    targetCollection.drop((err)=>{
-      if ( err ) {
+  return new Promise((resolve, reject) => {
+    targetCollection.drop(err => {
+      if (err) {
         return reject(err)
       }
       resolve()
@@ -24,7 +24,7 @@ const dropMongoCollection = (mongoose, name) => {
   })
 }
 
-export default async function (mongoose) {
+export default async function(mongoose) {
   try {
     await dropMongoCollection(mongoose, 'Users')
   } catch (err) {
@@ -35,7 +35,7 @@ export default async function (mongoose) {
   try {
     const response = await User.create(UsersData)
   } catch (err) {
-    console.log("Error running inserts in fictures", err)
+    console.log('Error running inserts in fictures', err)
     return
   }
 }
