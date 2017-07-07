@@ -2,11 +2,14 @@ import express from 'express'
 import User from '../../models/user'
 import asyncRouteHandler from '../../utils/async-route-handler'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+
+import requireLogin from '../../middleware/require-login'
 
 export default function (mongoose) {
   const userApi = express.Router()
 
-  userApi.get('/user', asyncRouteHandler( 
+  userApi.get('/user', requireLogin, asyncRouteHandler( 
     async (req, res) => {
       const users = await User.find({})
       res.json({
@@ -24,10 +27,6 @@ export default function (mongoose) {
       
       const { username, password } = req.body
       const passwordHash = bcrypt.hashSync(password, 10)
-
-      // if(bcrypt.compareSync(password, passwordHash)) {
-        
-      // }
 
       const user = await User.create({
         username,
@@ -80,6 +79,48 @@ export default function (mongoose) {
       res.json({
         status: 'ok'
       })
+    }
+  ))
+
+
+  userApi.post('/user/authenticate', asyncRouteHandler(
+    async (req, res) => {
+      const { username, password } = req.body
+
+      if ( !username || !password ) {
+        return res.status(403).json({
+          status:'error',
+          message: 'empty user credentials'
+        })
+      } 
+
+      const matchedUser = await User.findOne({
+        username: username
+      })
+
+      if ( !matchedUser ) {
+        return res.status(401).json({
+          status:'error',
+          message: 'invalid user credentials'
+        })
+      }
+
+      if ( !bcrypt.compareSync(password, matchedUser.password) ) {
+        return res.status(401).json({
+          status:'error',
+          message: 'invalid user password'
+        })
+      }
+
+      const authToken = jwt.sign(matchedUser.toJSON(), req.app.get('JWT_SECRET'), {
+        expiresIn: 24*60*60 // 24 hours token lifespan
+      })
+
+      res.json({
+        status: 'ok',
+        token: authToken
+      })
+
     }
   ))
 

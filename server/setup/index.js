@@ -9,7 +9,8 @@ import fixtures from './fixtures'
 export default async function serverSetup(config) {
   const {
     APP_PORT, APP_HOST, 
-    MONGO_DB_CON_STRING, DB_PROD_NAME_DEV, DB_PROD_NAME_PROD
+    MONGO_DB_CON_STRING, DB_PROD_NAME_DEV, DB_PROD_NAME_PROD,
+    JWT_SECRET
   } = config
 
   let mongoose
@@ -33,6 +34,8 @@ export default async function serverSetup(config) {
   }
 
   const app = express()
+
+  app.set('JWT_SECRET', JWT_SECRET)
 
   app.use(bodyParser.json())
 
