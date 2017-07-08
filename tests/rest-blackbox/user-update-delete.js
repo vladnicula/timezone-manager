@@ -110,15 +110,10 @@ test.serial('PATCH /api/v1/user (SuperAdmin upgrade user to manager/admin)', asy
   try {
     authToken = await authUserAndGetToken(adminPayload);
 
-    await server
-      .patch(`/api/v1/user/${newUserId}`)
-      .set('x-access-token', authToken)
-      .send({
-        ...newUser,
-        role: 1,
-      })
-      .expect('Content-Type', /json/)
-      .expect(200);
+    await patchUser(newUserId, {
+      ...newUser,
+      role: 1,
+    }, authToken);
 
     let response = await server
         .get(`/api/v1/user/${newUserId}`)
@@ -131,15 +126,10 @@ test.serial('PATCH /api/v1/user (SuperAdmin upgrade user to manager/admin)', asy
     }
 
 
-    await server
-      .patch(`/api/v1/user/${newUserId}`)
-      .set('x-access-token', authToken)
-      .send({
-        ...newUser,
-        role: 2,
-      })
-      .expect('Content-Type', /json/)
-      .expect(200);
+    await patchUser(newUserId, {
+      ...newUser,
+      role: 2,
+    }, authToken);
 
     response = await server
         .get(`/api/v1/user/${newUserId}`)
@@ -152,15 +142,10 @@ test.serial('PATCH /api/v1/user (SuperAdmin upgrade user to manager/admin)', asy
     }
 
 
-    await server
-      .patch(`/api/v1/user/${newUserId}`)
-      .set('x-access-token', authToken)
-      .send({
-        ...newUser,
-        role: 0,
-      })
-      .expect('Content-Type', /json/)
-      .expect(200);
+    await patchUser(newUserId, {
+      ...newUser,
+      role: 0,
+    }, authToken);
 
     response = await server
         .get(`/api/v1/user/${newUserId}`)
