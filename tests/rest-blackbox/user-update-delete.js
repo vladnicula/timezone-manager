@@ -48,7 +48,7 @@ const patchUser = async (id, authToken, userPayload) => {
   return response.body;
 };
 
-test('GET /api/v1/user (SuperAdmin delete user)', async (t) => {
+test.serial('GET /api/v1/user (SuperAdmin delete user)', async (t) => {
   const newUser = {
     username: 'new-user',
     password: '1234',
@@ -88,7 +88,7 @@ test('GET /api/v1/user (SuperAdmin delete user)', async (t) => {
 });
 
 
-test('PATCH /api/v1/user (SuperAdmin upgrade user to manager/admin)', async (t) => {
+test.serial('PATCH /api/v1/user (SuperAdmin upgrade user to manager/admin)', async (t) => {
   const newUser = {
     username: 'new-user-to-be-manager',
     password: '1234',
@@ -112,15 +112,6 @@ test('PATCH /api/v1/user (SuperAdmin upgrade user to manager/admin)', async (t) 
 
     await server
       .patch(`/api/v1/user/${newUserId}`)
-      .send({
-        ...newUser,
-        role: 1,
-      })
-      .expect('Content-Type', /json/)
-      .expect(403);
-
-    const response = await server
-      .delete(`/api/v1/user/${newUserId}`)
       .set('x-access-token', authToken)
       .send({
         ...newUser,
@@ -128,6 +119,58 @@ test('PATCH /api/v1/user (SuperAdmin upgrade user to manager/admin)', async (t) 
       })
       .expect('Content-Type', /json/)
       .expect(200);
+
+    let response = await server
+        .get(`/api/v1/user/${newUserId}`)
+        .set('x-access-token', authToken)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+    if (response.body.users[0].role !== 1) {
+      t.fail('User role change by admin failed');
+    }
+
+
+    await server
+      .patch(`/api/v1/user/${newUserId}`)
+      .set('x-access-token', authToken)
+      .send({
+        ...newUser,
+        role: 2,
+      })
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    response = await server
+        .get(`/api/v1/user/${newUserId}`)
+        .set('x-access-token', authToken)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+    if (response.body.users[0].role !== 2) {
+      t.fail('User role change by admin failed');
+    }
+
+
+    await server
+      .patch(`/api/v1/user/${newUserId}`)
+      .set('x-access-token', authToken)
+      .send({
+        ...newUser,
+        role: 0,
+      })
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    response = await server
+        .get(`/api/v1/user/${newUserId}`)
+        .set('x-access-token', authToken)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+    if (response.body.users[0].role !== 0) {
+      t.fail('User role change by admin failed');
+    }
   } catch (err) {
     t.fail(err);
   }

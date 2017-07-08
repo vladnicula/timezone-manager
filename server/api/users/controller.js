@@ -57,12 +57,22 @@ export default {
       user: {
         username: resopnse.username,
         id: resopnse._id,
+        role: resopnse.role,
       },
     });
   },
 
+  userDetails: async (req, res) => {
+    const { id } = req.params;
+    const user = await User.findById(id).select('username _id, role').exec();
+    res.json({
+      users: [user],
+      status: 'ok',
+    });
+  },
+
   update: async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, role } = req.body;
 
     const passwordHash = await bcrypt.hash(password, 10);
 
@@ -72,12 +82,14 @@ export default {
         {
           username,
           password: passwordHash,
+          role,
         },
       );
 
       res.json({
         user: {
           username,
+          role,
         },
         status: 'ok',
       });

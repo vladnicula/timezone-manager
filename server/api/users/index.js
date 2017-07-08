@@ -8,10 +8,23 @@ import controller from './controller';
 export default function () {
   const userApi = express.Router();
 
+  /**
+   * Get user list (manager and admin only)
+   */
   userApi.get(
     '/user',
     requireLogin,
     asyncRouteHandler(controller.listAll),
+  );
+
+  /**
+   * Get user details for an idividual user.
+   * Will check if user can requiest info for that particular user
+   */
+  userApi.get(
+    '/user/:id',
+    requireLogin,
+    asyncRouteHandler(controller.userDetails),
   );
 
   /**
