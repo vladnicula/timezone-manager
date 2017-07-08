@@ -27,16 +27,14 @@ export default function () {
    */
   userApi.patch(
     '/user/:id',
+    requireLogin,
     asyncRouteHandler(controller.update),
   );
 
   userApi.delete(
     '/user/:id',
-    asyncRouteHandler((req, res) => {
-      res.json({
-        status: 'ok',
-      });
-    }),
+    requireLogin,
+    asyncRouteHandler(controller.removeUser),
   );
 
   userApi.post(

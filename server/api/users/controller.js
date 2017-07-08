@@ -5,10 +5,26 @@ import User from '../../models/user';
 
 export default {
   listAll: async (req, res) => {
-    const users = await User.find({});
+    const users = await User.find({}).select('username _id, role').exec();
     res.json({
       users,
       status: 'ok',
+    });
+  },
+
+  removeUser: async (req, res) => {
+    const { id } = req.params;
+    const target = await User.findByIdAndRemove(id);
+    if (target) {
+      return res.json({
+        user: target,
+        status: 'ok',
+      });
+    }
+
+    return res.status(403).json({
+      status: 'error',
+      message: 'user not found',
     });
   },
 
@@ -31,13 +47,17 @@ export default {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    await User.create({
+    const resopnse = await User.create({
       username,
       password: passwordHash,
     });
 
     return res.json({
       status: 'ok',
+      user: {
+        username: resopnse.username,
+        id: resopnse._id,
+      },
     });
   },
 
@@ -98,8 +118,10 @@ export default {
       });
     }
 
+    const userData = matchedUser.toJSON();
+
     const authToken = jwt.sign(
-        matchedUser.toJSON(),
+        userData,
         req.app.get('JWT_SECRET'),
       {
         expiresIn: 24 * 60 * 60, // 24 hours token lifespan
@@ -109,6 +131,10 @@ export default {
     return res.json({
       status: 'ok',
       token: authToken,
+      user: {
+        id: userData._id,
+        username: userData.username,
+      },
     });
   },
 }
