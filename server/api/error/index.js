@@ -15,15 +15,20 @@ const getStringMessage = (err) => {
 };
 
 export default function (err, req, res, next) {
+  if (err.name === 'ValidationError') {
+    return res.status(403).json({
+      status: 'error',
+      message: `ValidationError: ${Object.keys(err.errors)[0].message}`,
+    });
+  }
+
   // let express handle errors in development
   if (process.env.NODE_ENV === 'development') {
     return next(err);
   }
 
-  res.status(500).json({
+  return res.status(500).json({
     status: 'error',
     message: getStringMessage(err),
   });
-  console.error(err);
-  return true;
 }

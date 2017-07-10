@@ -11,7 +11,7 @@ test.before('api server startup', async () => {
   server = supertest(expressServer);
 });
 
-test.only('GET /api/v1/user (SuperAdmin login)', async (t) => {
+test.serial('GET /api/v1/user (SuperAdmin login)', async (t) => {
   const adminPayload = {
     username: SUPER_ADMIN.username,
     password: '1234',

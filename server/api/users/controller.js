@@ -49,25 +49,9 @@ export default {
   register: async (req, res) => {
     const { username, password } = req.body;
 
-    if (!password || password.length < 4) {
-      return res.status(400).json({
-        status: 'error',
-        message: 'Invalid or empty password',
-      });
-    }
-
-    if (!username || username.length < 4) {
-      return res.status(400).json({
-        status: 'error',
-        message: 'Invalid or empty username',
-      });
-    }
-
-    const passwordHash = await bcrypt.hash(password, 10);
-
     const resopnse = await User.create({
       username,
-      password: passwordHash,
+      password,
     });
 
     return res.json({
@@ -148,11 +132,11 @@ export default {
     }
 
     if (password) {
-      targetUser.password = await bcrypt.hash(password, 10);
+      targetUser.password = password;
     }
 
     if (newPassword) {
-      targetUser.password = await bcrypt.hash(newPassword, 10);
+      targetUser.password = newPassword;
     }
 
     const result = await targetUser.save();
@@ -199,7 +183,7 @@ export default {
       {
         expiresIn: 24 * 60 * 60, // 24 hours token lifespan
       },
-      );
+    );
 
     return res.json({
       status: 'ok',

@@ -8,9 +8,7 @@
  * document with more complicated entities.
  */
 
-import bcrypt from 'bcrypt';
-
-const SUPER_ADMIN = { username: 'admin', rawPassword: '1234', password: bcrypt.hashSync('1234', 10), role: 2 };
+const SUPER_ADMIN = { username: 'admin', rawPassword: '1234', password: '1234', role: 2 };
 
 export { SUPER_ADMIN };
 

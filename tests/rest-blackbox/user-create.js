@@ -11,7 +11,7 @@ test.before('api server startup', async () => {
   server = supertest(expressServer);
 });
 
-test('POST /api/v1/user (create new user) /api/v1/user/authenticate (login)', async (t) => {
+test.serial('POST /api/v1/user (create new user) /api/v1/user/authenticate (login)', async (t) => {
   const payload = {
     username: 'vlad',
     password: '1234',
@@ -36,7 +36,7 @@ test('POST /api/v1/user (create new user) /api/v1/user/authenticate (login)', as
   t.pass();
 });
 
-test('POST /api/v1/user (create new user) no passs', async (t) => {
+test.serial('POST /api/v1/user (create new user) no passs', async (t) => {
   const payload = {
     username: 'seconduser',
     password: '',
@@ -47,7 +47,7 @@ test('POST /api/v1/user (create new user) no passs', async (t) => {
       .post('/api/v1/user')
       .send(payload)
       .expect('Content-Type', /json/)
-      .expect(400);
+      .expect(403);
   } catch (err) {
     t.fail(err);
   }
@@ -56,7 +56,7 @@ test('POST /api/v1/user (create new user) no passs', async (t) => {
 });
 
 
-test('POST /api/v1/user (create new user) invalid pass', async (t) => {
+test.serial('POST /api/v1/user (create new user) invalid pass', async (t) => {
   const payload = {
     username: 'seconduser',
     password: '123',
@@ -67,7 +67,7 @@ test('POST /api/v1/user (create new user) invalid pass', async (t) => {
       .post('/api/v1/user')
       .send(payload)
       .expect('Content-Type', /json/)
-      .expect(400);
+      .expect(403);
   } catch (err) {
     t.fail(err);
   }
@@ -76,7 +76,7 @@ test('POST /api/v1/user (create new user) invalid pass', async (t) => {
 });
 
 
-test('POST /api/v1/user (create new user) emtpy username', async (t) => {
+test.serial('POST /api/v1/user (create new user) emtpy username', async (t) => {
   const payload = {
     username: '',
     password: '12345',
@@ -87,7 +87,7 @@ test('POST /api/v1/user (create new user) emtpy username', async (t) => {
       .post('/api/v1/user')
       .send(payload)
       .expect('Content-Type', /json/)
-      .expect(400);
+      .expect(403);
   } catch (err) {
     t.fail(err);
   }
@@ -95,7 +95,7 @@ test('POST /api/v1/user (create new user) emtpy username', async (t) => {
   t.pass();
 });
 
-test('POST /api/v1/user (create new user) invalid username', async (t) => {
+test.serial('POST /api/v1/user (create new user) invalid username', async (t) => {
   const payload = {
     username: 'jus',
     password: '12345',
@@ -106,7 +106,7 @@ test('POST /api/v1/user (create new user) invalid username', async (t) => {
       .post('/api/v1/user')
       .send(payload)
       .expect('Content-Type', /json/)
-      .expect(400);
+      .expect(403);
   } catch (err) {
     t.fail(err);
   }
