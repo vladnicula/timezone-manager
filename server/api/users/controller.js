@@ -3,10 +3,18 @@ import jwt from 'jsonwebtoken';
 
 import User from '../../models/user';
 
+
 export default {
   listAll: async (req, res) => {
+    const decoded = req.decoded;
+    if (!decoded.role) {
+      return res.status(403).json({
+        status: 'error',
+        message: 'action not allowed with curreny user role',
+      });
+    }
     const users = await User.find({}).select('username _id, role').exec();
-    res.json({
+    return res.json({
       users,
       status: 'ok',
     });
@@ -63,7 +71,11 @@ export default {
   },
 
   userDetails: async (req, res) => {
-    const { id } = req.params;
+    let { id } = req.params;
+    if (id === 'me') {
+      id = req.decoded._id;
+    }
+
     const user = await User.findById(id).select('username _id, role').exec();
     res.json({
       users: [user],
@@ -72,33 +84,78 @@ export default {
   },
 
   update: async (req, res) => {
-    const { username, password, role } = req.body;
+    const id = req.params.id || req.body.id;
+    const { role, username, password, newPassword } = req.body;
+    const { _id: authId, role: authRole } = req.decoded;
 
-    const passwordHash = await bcrypt.hash(password, 10);
+    const targetUser = await User.findById(id);
 
-    if (bcrypt.compareSync(password, passwordHash)) {
-      await User.findOneAndUpdate(
-        { username },
-        {
-          username,
-          password: passwordHash,
-          role,
-        },
-      );
+    // console.log({
+    //   targetUser,
+    //   changeUser: { role, username, password, newPassword },
+    //   auth: { authId, authRole },
+    // });
 
-      res.json({
-        user: {
-          username,
-          role,
-        },
-        status: 'ok',
-      });
-    } else {
-      res.status(400).json({
+    /**
+     * Only admins edit admins
+     */
+    if (targetUser.role === 2 && authRole < 2) {
+      return res.status(403).json({
         status: 'error',
-        message: 'user authorisation failed',
+        message: 'Authorisation failed. Only admins can edit admins',
       });
     }
+
+    if (
+      (role !== undefined && !authRole)
+      || (role === 2 && authRole !== 2)
+    ) {
+      return res.status(403).json({
+        status: 'error',
+        message: 'Authorisation failed. Role operation denyed.',
+      });
+    }
+
+    /**
+     * If simple user
+     */
+    if (!authRole) {
+      if (id && authId !== id) {
+        return res.status(403).json({
+          status: 'error',
+          message: 'Authorisation failed. Users can only change their own details',
+        });
+      }
+
+      if (!password || !bcrypt.compareSync(password, targetUser.password)) {
+        return res.status(403).json({
+          status: 'error',
+          message: 'Authorisation failed. User password incorrect',
+        });
+      }
+    }
+
+    if (role !== undefined) {
+      targetUser.role = role;
+    }
+
+    if (username) {
+      targetUser.username = username;
+    }
+
+    if (password) {
+      targetUser.password = password;
+    }
+
+    if (newPassword) {
+      targetUser.password = newPassword;
+    }
+
+    const result = await targetUser.save();
+    return res.json({
+      users: [result],
+      status: 'ok',
+    });
   },
 
 
