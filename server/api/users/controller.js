@@ -10,7 +10,7 @@ export default {
     if (!decoded.role) {
       return res.status(403).json({
         status: 'error',
-        message: 'action not allowed with curreny user role',
+        message: 'Action not allowed with curreny user role',
       });
     }
     const users = await User.find({}).select('username _id, role').exec();
@@ -22,7 +22,17 @@ export default {
 
   removeUser: async (req, res) => {
     const { id } = req.params;
+    const { _id: authId } = req.decoded;
+    const currentUser = await User.findById(authId);
     const target = await User.findByIdAndRemove(id);
+
+    if (!currentUser.role || target.role > currentUser.role) {
+      return res.status(403).json({
+        status: 'error',
+        message: 'Cannot delete this user',
+      });
+    }
+
     if (target) {
       return res.json({
         user: target,
@@ -32,7 +42,7 @@ export default {
 
     return res.status(403).json({
       status: 'error',
-      message: 'user not found',
+      message: 'User not found',
     });
   },
 
@@ -89,12 +99,6 @@ export default {
     const { _id: authId, role: authRole } = req.decoded;
 
     const targetUser = await User.findById(id);
-
-    // console.log({
-    //   targetUser,
-    //   changeUser: { role, username, password, newPassword },
-    //   auth: { authId, authRole },
-    // });
 
     /**
      * Only admins edit admins

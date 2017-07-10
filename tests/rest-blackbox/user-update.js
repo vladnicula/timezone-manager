@@ -213,7 +213,7 @@ test.serial('User PATCH /api/v1/user can update self but not role', async (t) =>
   t.pass();
 });
 
-test.only('User PATCH /api/v1/user can update  password', async (t) => {
+test.serial('User PATCH /api/v1/user can update  password', async (t) => {
   const newUser = {
     username: 'user-change-password',
     password: '1234',
