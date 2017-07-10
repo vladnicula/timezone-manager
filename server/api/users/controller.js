@@ -144,11 +144,11 @@ export default {
     }
 
     if (password) {
-      targetUser.password = password;
+      targetUser.password = await bcrypt.hash(password, 10);
     }
 
     if (newPassword) {
-      targetUser.password = newPassword;
+      targetUser.password = await bcrypt.hash(newPassword, 10);
     }
 
     const result = await targetUser.save();

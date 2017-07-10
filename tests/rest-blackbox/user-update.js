@@ -169,7 +169,7 @@ test.serial('Manager PATCH /api/v1/user tries to change admin role or details', 
   t.pass();
 });
 
-test('User PATCH /api/v1/user can update self but not role', async (t) => {
+test.serial('User PATCH /api/v1/user can update self but not role', async (t) => {
   const newUser = {
     username: 'user-01-patcher',
     password: '1234',
@@ -204,6 +204,51 @@ test('User PATCH /api/v1/user can update self but not role', async (t) => {
       .expect(200);
 
     if (result.body.users[0].username !== 'user-01-patcher-2') {
+      t.fail('simple patch faild');
+    }
+  } catch (err) {
+    t.fail(err);
+  }
+
+  t.pass();
+});
+
+test.only('User PATCH /api/v1/user can update  password', async (t) => {
+  const newUser = {
+    username: 'user-change-password',
+    password: '1234',
+  };
+
+  let newUserId;
+  let userAuthToken;
+  // create user and login
+  try {
+    newUserId = await createUserAndGetId(server, newUser);
+    userAuthToken = await authUserAndGetToken(server, newUser);
+
+
+    await patchUser(server, newUserId, {
+      password: '1234',
+      newPassword: '3456',
+    }, userAuthToken);
+
+    await patchUser(server, newUserId, {
+      username: 'username-updated-01-password-change',
+      password: '1234',
+    }, userAuthToken, 403);
+
+    await patchUser(server, newUserId, {
+      username: 'username-updated-01-password-change',
+      password: '3456',
+    }, userAuthToken);
+
+    const result = await server
+      .get(`/api/v1/user/${newUserId}`)
+      .set('x-access-token', userAuthToken)
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    if (result.body.users[0].username !== 'username-updated-01-password-change') {
       t.fail('simple patch faild');
     }
   } catch (err) {
