@@ -1,13 +1,10 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-
 import Timezone from '../../models/timezone';
 import User from '../../models/user';
 
 export default {
   listAll: async (req, res) => {
     const decoded = req.decoded;
-    const { user_id: userId } = req.query;
+    const { user_id: userId, before, limit, filter_name: filterName } = req.query;
     const { role: authRole, _id: authId } = decoded;
 
     if (userId !== undefined && authRole !== 2) {
@@ -17,9 +14,26 @@ export default {
       });
     }
 
-    const timezones = await Timezone.find({
+    const query = {
       userId: (userId || authId).toString(),
-    });
+    };
+
+    if (before) {
+      query.createdTimestamp = { $lte: before };
+    }
+
+    if (filterName) {
+      query.name = { $regex: `.*${filterName}.*` };
+    }
+
+
+    let timezonesOp = Timezone.find(query);
+
+    if (limit) {
+      timezonesOp = timezonesOp.limit(limit);
+    }
+
+    const timezones = await timezonesOp;
 
     return res.json({
       status: 'ok',

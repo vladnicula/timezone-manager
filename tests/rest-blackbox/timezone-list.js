@@ -137,3 +137,31 @@ test.serial('User GET /api/v1/timezone?userId', async (t) => {
 
   t.pass();
 });
+
+
+test.serial('User GET /api/v1/timezone?filter_name', async (t) => {
+  try {
+    const response = await server
+      .get('/api/v1/timezone?filter_name=timezone2')
+      .set('x-access-token', userAuthToken)
+      .expect('Content-Type', /json/);
+
+    t.is(response.body.timezones.length, 1, 'one match should be found by filtering by name for fixture user');
+  } catch (err) {
+    t.fail(err);
+  }
+
+  try {
+    const response = await server
+      .get('/api/v1/timezone?filter_name=some%20random%20value')
+      .set('x-access-token', userAuthToken)
+      .expect('Content-Type', /json/);
+
+    t.is(response.body.timezones.length, 0, 'no match expected for a name that is not in the list of timezones');
+  } catch (err) {
+    t.fail(err);
+  }
+
+
+  t.pass();
+});
