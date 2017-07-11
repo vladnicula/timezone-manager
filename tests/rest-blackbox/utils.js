@@ -40,3 +40,13 @@ export {
   patchUser,
 }
 ;
+
+const getUserDetails = async (server, authToken) => {
+  const response = await server
+    .get('/api/v1/user/me')
+    .set('x-access-token', authToken)
+    .expect('Content-Type', /json/);
+  return response.body.users[0];
+};
+
+export { getUserDetails };

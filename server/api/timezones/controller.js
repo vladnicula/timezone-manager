@@ -7,8 +7,23 @@ import User from '../../models/user';
 export default {
   listAll: async (req, res) => {
     const decoded = req.decoded;
+    const { user_id: userId } = req.query;
+    const { role: authRole, _id: authId } = decoded;
+
+    if (userId !== undefined && authRole !== 2) {
+      return res.status(403).json({
+        status: 'error',
+        message: 'Cannot access timezone list of target account.',
+      });
+    }
+
+    const timezones = await Timezone.find({
+      userId: (userId || authId).toString(),
+    });
+
     return res.json({
       status: 'ok',
+      timezones,
     });
   },
 

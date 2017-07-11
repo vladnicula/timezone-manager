@@ -12,6 +12,22 @@ const SUPER_ADMIN = { username: 'admin', rawPassword: '1234', password: '1234', 
 
 export { SUPER_ADMIN };
 
-const USERS = [SUPER_ADMIN];
+const NORMAL_USER = {
+  username: 'johnny-user',
+  password: '1234',
+  role: 0,
+};
+
+export { NORMAL_USER };
+
+const MANAGER_USER = {
+  username: 'vlad-manager',
+  password: '1234',
+  role: 1,
+};
+
+export { MANAGER_USER };
+
+const USERS = [SUPER_ADMIN, NORMAL_USER, MANAGER_USER];
 
 export default USERS;
