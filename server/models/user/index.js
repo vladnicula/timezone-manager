@@ -38,7 +38,7 @@ userSchema.path('password').validate(
 );
 
 userSchema.path('username').validate((value) => {
-  const validCharacters = value.match(/^[a-zA-Z0-9]+$/);
+  const validCharacters = value.match(/^[a-zA-Z0-9_-]+$/);
   return validCharacters !== -1;
 }, 'Invalid username provided. Only alphanumeric characters are supported');
 
