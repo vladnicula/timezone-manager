@@ -16,7 +16,7 @@ const getStringMessage = (err) => {
 
 export default function (err, req, res, next) {
   // if (process.env.NODE_ENV === 'development') {
-  console.log(err);
+  // console.log(err);
   // }
   if (err.name === 'ValidationError') {
     return res.status(403).json({

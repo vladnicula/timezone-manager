@@ -1,5 +1,11 @@
-import morgan from "morgan"
+import morgan from 'morgan';
 
-export default function(app) {
-  app.use(morgan("combined"))
+export default function (app) {
+  if (process.env.NODE_ENV === 'test') {
+    if (process.env.TEST_LOGGERS_ENABLED) {
+      app.use(morgan('tiny'));
+    }
+  } else {
+    app.use(morgan('combined'));
+  }
 }

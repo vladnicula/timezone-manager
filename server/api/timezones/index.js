@@ -33,5 +33,11 @@ export default function () {
     asyncRouteHandler(controller.update),
   );
 
+  timezoneApi.delete(
+    '/timezone/:id',
+    requireLogin,
+    asyncRouteHandler(controller.delete),
+  );
+
   return timezoneApi;
 }

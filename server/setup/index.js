@@ -43,6 +43,10 @@ export default async function serverSetup(config) {
 
   apiRoutes(app, mongoose);
 
+  if (process.env.NODE_ENV === 'test' && !process.env.TEST_LOGGERS_ENABLED) {
+    return Promise.resolve(app);
+  }
+
   console.log('[Timezone Manager] setup done');
 
   return Promise.resolve(app);

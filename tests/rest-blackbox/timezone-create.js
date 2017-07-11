@@ -269,7 +269,7 @@ test.serial('Manager POST /api/v1/timezone (create new timezone) other user id t
 
   try {
     const managerUser = {
-      username: 'new-manager-guy',
+      username: 'new-manager-guy-create-timezone',
       password: '1234',
     };
     const managerUserId = await createUserAndGetId(server, managerUser);

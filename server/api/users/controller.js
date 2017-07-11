@@ -34,8 +34,8 @@ export default {
     }
 
     if (target) {
+      await target.remove();
       return res.json({
-        user: target,
         status: 'ok',
       });
     }

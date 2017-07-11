@@ -25,7 +25,6 @@ const dropMongoCollection = (mongoose, name) => {
 };
 
 export default async function (mongoose) {
-  console.log('fixtures');
   try {
     await dropMongoCollection(mongoose, 'Users');
     await dropMongoCollection(mongoose, 'Timezones');

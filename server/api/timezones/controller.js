@@ -60,7 +60,7 @@ export default {
       });
     }
 
-    if (authId !== timezone.userId.toString() && authRole !== 2) {
+    if (authId !== currentUserIdForTimezone && authRole !== 2) {
       return res.status(403).json({
         status: 'error',
         message: 'Cannot update timezone of another user.',
@@ -84,6 +84,27 @@ export default {
     return res.json({
       status: 'ok',
       timezones: [timezone],
+    });
+  },
+
+  delete: async (req, res) => {
+    const { id } = req.params;
+    const { _id: authId, role: authRole } = req.decoded;
+
+    const timezone = await Timezone.findById(id);
+    const currentUserIdForTimezone = timezone.userId.toString();
+
+    if (authId !== currentUserIdForTimezone && authRole !== 2) {
+      return res.status(403).json({
+        status: 'error',
+        message: 'Cannot delete timezone of another user.',
+      });
+    }
+
+    await timezone.remove();
+
+    return res.json({
+      status: 'ok',
     });
   },
 };
