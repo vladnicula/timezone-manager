@@ -36,8 +36,50 @@ export default {
     }
 
     const timezone = await Timezone.create({
-      name, city, offset, userId: targetUserId,
+      name, city, offset: parseFloat(offset), userId: targetUserId,
     });
+
+    return res.json({
+      status: 'ok',
+      timezones: [timezone],
+    });
+  },
+
+  update: async (req, res) => {
+    const id = req.params.id || req.body.userId;
+    const { name, city, offset, userId } = req.body;
+    const { _id: authId, role: authRole } = req.decoded;
+
+    const timezone = await Timezone.findById(id);
+    const currentUserIdForTimezone = timezone.userId.toString();
+
+    if (userId && currentUserIdForTimezone !== userId) {
+      return res.status(403).json({
+        status: 'error',
+        message: 'Changing user id of timezone not allowed.',
+      });
+    }
+
+    if (authId !== timezone.userId.toString() && authRole !== 2) {
+      return res.status(403).json({
+        status: 'error',
+        message: 'Cannot update timezone of another user.',
+      });
+    }
+
+    if (name) {
+      timezone.name = name;
+    }
+
+    if (city) {
+      timezone.city = city;
+    }
+
+    if (offset) {
+      timezone.offset = parseFloat(offset);
+    }
+
+    await timezone.save();
 
     return res.json({
       status: 'ok',

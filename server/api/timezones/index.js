@@ -26,5 +26,12 @@ export default function () {
     asyncRouteHandler(controller.create),
   );
 
+
+  timezoneApi.patch(
+    '/timezone/:id',
+    requireLogin,
+    asyncRouteHandler(controller.update),
+  );
+
   return timezoneApi;
 }
