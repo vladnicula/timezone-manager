@@ -28,6 +28,7 @@ export default async function (mongoose) {
   console.log('fixtures');
   try {
     await dropMongoCollection(mongoose, 'Users');
+    await dropMongoCollection(mongoose, 'Timezones');
   } catch (err) {
     console.log('Error droping collections in fixtures', err);
     return;

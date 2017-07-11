@@ -25,7 +25,19 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+
+/**
+ * Because we rely on async operations to verify
+ * whether a document exists in the database, it's
+ * possible for two queries to execute at the same time,
+ * both get 0 back, and then both insert into MongoDB.
+ */
+
+// dissalow inserting duplicate usernames even if validation
+// plugin fails
+userSchema.index({ username: 1 }, { unique: true });
 userSchema.plugin(uniqueValidator);
+
 
 userSchema.path('username').validate(
   value => (value.length >= 4),
@@ -43,7 +55,9 @@ userSchema.path('username').validate((value) => {
 }, 'Invalid username provided. Only alphanumeric characters are supported');
 
 userSchema.pre('save', async function (next) {
-  this.password = await bcrypt.hash(this.password, 10);
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
   next();
 });
 
