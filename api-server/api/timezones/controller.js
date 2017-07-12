@@ -23,7 +23,7 @@ export default {
     }
 
     if (filterName) {
-      if (!filterName.match(/^[A-Za-z\-0-9 ]$/)) {
+      if (!filterName.match(/^[A-Za-z\-0-9 ]\{1,\}$/)) {
         return res.json({
           status: 'ok',
           timezones: [],

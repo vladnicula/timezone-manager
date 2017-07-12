@@ -5,6 +5,7 @@ import apiRoutes from '../api';
 import httpLogger from './http-logger';
 import mongoConnection from './mongo-connection';
 import fixtures from './fixtures';
+import webClient from './web-client';
 
 export default async function serverSetup(config) {
   const {
@@ -36,6 +37,8 @@ export default async function serverSetup(config) {
   const app = express();
 
   app.set('JWT_SECRET', JWT_SECRET);
+
+  webClient(app);
 
   app.use(bodyParser.json());
 

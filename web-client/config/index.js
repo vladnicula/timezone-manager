@@ -1,0 +1,3 @@
+const WEB_SERVER_PORT = 3050;
+
+export { WEB_SERVER_PORT };
