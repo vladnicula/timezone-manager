@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 import apiRoutes from '../api';
 import httpLogger from './http-logger';
@@ -35,6 +36,8 @@ export default async function serverSetup(config) {
   }
 
   const app = express();
+
+  app.use(cors());
 
   app.set('JWT_SECRET', JWT_SECRET);
 

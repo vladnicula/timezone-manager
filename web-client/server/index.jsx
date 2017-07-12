@@ -1,9 +1,13 @@
 import express from 'express';
-import webpack from 'webpack';
+import cookieParser from 'cookie-parser';
 
 import React from 'react';
+import { Provider } from 'react-redux';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router';
+
+import webpack from 'webpack';
+
 
 import { WEB_SERVER_PORT } from '../config';
 
@@ -12,6 +16,9 @@ import Routes from '../routes';
 import webpackConfig from '../build/webpack.client.config.dev.js';
 
 import pageTempalte from './template';
+
+import store from '../domain';
+import { SET_AUTH_TOKEN } from '../domain/auth/actions';
 
 const app = express();
 
@@ -36,14 +43,25 @@ const configWebpack = () => new Promise((resolve, reject) => {
   }
 });
 
+app.use(cookieParser());
+
 app.use('/dist', express.static('dist'));
 
 app.get('*', (req, res) => {
   const context = {};
+  const { jwt } = req.cookies || {};
+  if (jwt) {
+    store.dispatch({
+      type: SET_AUTH_TOKEN,
+      token: jwt,
+    });
+  }
   const html = ReactDOMServer.renderToString(
-    <StaticRouter location={req.url} context={context}>
-      <Routes />
-    </StaticRouter>,
+    <Provider store={store}>
+      <StaticRouter location={req.url} context={context}>
+        <Routes />
+      </StaticRouter>
+    </Provider>,
   );
 
   // context.url will contain the URL to redirect to if a <Redirect> was used
