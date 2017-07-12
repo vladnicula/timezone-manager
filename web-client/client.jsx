@@ -6,6 +6,8 @@ import Routes from './routes';
 
 // import './styles/index.scss';
 
+console.log('alive');
+
 ReactDOM.render(
   <Router><Routes /></Router>,
   document.getElementById('react-app'),

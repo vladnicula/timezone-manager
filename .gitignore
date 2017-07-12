@@ -19,4 +19,4 @@ jspm_packages/
 .yarn-integrity
 
 # dist for bundling of client app
-/dist
+dist/

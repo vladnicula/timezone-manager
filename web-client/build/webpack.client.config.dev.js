@@ -3,7 +3,7 @@ import webpack from 'webpack';
 
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import CleanWebpackPlugin from 'clean-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
+// import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 const clientPath = path.resolve(__dirname, '../');
 const clientBuildDestinationPath = path.resolve(__dirname, '../../dist');
@@ -28,10 +28,10 @@ const cleanBuildFolter = new CleanWebpackPlugin(['dist'], {
   dry: false,
 });
 
-const mainHtmlPath = path.resolve(__dirname, './templates/index.ejs');
-const developmentIndexHtmlFile = new HtmlWebpackPlugin({
-  template: mainHtmlPath,
-});
+// const mainHtmlPath = path.resolve(__dirname, './templates/index.ejs');
+// const developmentIndexHtmlFile = new HtmlWebpackPlugin({
+//   template: mainHtmlPath,
+// });
 
 const vendorExtractionPlugin = new webpack.optimize.CommonsChunkPlugin({
   name: 'vendor',
@@ -159,6 +159,6 @@ module.exports = {
     vendorExtractionPlugin,
     extractSass,
     cleanBuildFolter,
-    developmentIndexHtmlFile,
+    // developmentIndexHtmlFile,
   ],
 };
