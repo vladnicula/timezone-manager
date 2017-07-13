@@ -28,21 +28,7 @@ const timezoneSchema = new mongoose.Schema({
 
 // disallow inserting duplicate fields by any means
 timezoneSchema.index({ name: 1, userId: 1 }, { unique: true });
-
-// userSchema.path('username').validate(
-//   value => (value.length >= 4),
-//   'Invalid username provided. Must have at least 4 characters',
-// );
-
-// userSchema.path('password').validate(
-//   value => (value.length >= 4),
-//   'Invalid password provided. Must have at least 4 characters',
-// );
-
-// userSchema.path('username').validate((value) => {
-//   const validCharacters = value.match(/^[a-zA-Z0-9]+$/);
-//   return validCharacters !== -1;
-// }, 'Invalid username provided. Only alphanumeric characters are supported');
+timezoneSchema.index({ name: 'text' });
 
 timezoneSchema.pre('save', function (next) {
   const { _id, name, userId } = this;

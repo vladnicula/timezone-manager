@@ -9,20 +9,33 @@ import {
 } from './actions';
 
 
-const fetchTimezones = () => async (dispatch) => {
+const fetchTimezones = (authToken, { userId, nameFilter }) => async (dispatch) => {
   dispatch({
     type: TIMEZONE_OPERATION_START,
   });
 
-  const jwt = cookie.get('jwt');
+  const jwt = authToken || cookie.get('jwt');
   const authOptions = {
     headers: {
       'x-access-token': jwt,
     },
   };
 
+  let extras = '';
+  if (nameFilter) {
+    extras = `${extras}filter_name=${encodeURIComponent(nameFilter)}&`;
+  }
+
+  if (userId) {
+    extras = `${extras}user_id=${userId}&`;
+  }
+
+  if (extras) {
+    extras = `?${extras}`;
+  }
+
   const response = await axios.get(
-    'http://localhost:3185/api/v1/timezone',
+    `http://localhost:3185/api/v1/timezone${extras}`,
     authOptions,
   );
 
@@ -58,7 +71,7 @@ const createTimezone = timezoneData => async (dispatch) => {
       authOptions,
     );
 
-    await fetchTimezones()(dispatch);
+    await fetchTimezones(jwt, {})(dispatch);
 
     dispatch({
       type: TIMEZONE_OPERATION_SUCCESS,
@@ -95,7 +108,7 @@ const deleteTimezone = timezoneId => async (dispatch) => {
       authOptions,
     );
 
-    await fetchTimezones()(dispatch);
+    await fetchTimezones(jwt, {})(dispatch);
 
     dispatch({
       type: TIMEZONE_OPERATION_SUCCESS,
@@ -133,7 +146,7 @@ const updateTimezone = (timezoneId, patchPayload) => async (dispatch) => {
       authOptions,
     );
 
-    await fetchTimezones()(dispatch);
+    await fetchTimezones(jwt, {})(dispatch);
 
     dispatch({
       type: TIMEZONE_OPERATION_SUCCESS,

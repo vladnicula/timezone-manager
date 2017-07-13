@@ -23,15 +23,14 @@ export default {
     }
 
     if (filterName) {
-      if (!filterName.match(/^[A-Za-z\-0-9 ]\{1,\}$/)) {
+      if (!filterName.match(/^[A-Za-z0-9\-_ ]{1,}$/)) {
         return res.json({
           status: 'ok',
           timezones: [],
         });
       }
-      query.name = { $regex: `.*${filterName}.*` };
+      query.$text = { $search: filterName };
     }
-
 
     let timezonesOp = Timezone.find(query);
 
@@ -39,7 +38,7 @@ export default {
       timezonesOp = timezonesOp.limit(limit);
     }
 
-    const timezones = await timezonesOp;
+    const timezones = await timezonesOp.exec();
 
     return res.json({
       status: 'ok',

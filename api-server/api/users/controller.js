@@ -49,6 +49,7 @@ export default {
   register: async (req, res) => {
     const { username, password, role } = req.body;
     const decoded = req.decoded;
+
     if (role) {
       // see if we have decode info
       if (!decoded) {

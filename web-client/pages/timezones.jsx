@@ -20,6 +20,8 @@ export class TimezonesPage extends Component {
     this.handleTimezoneFormSubmit = this.handleTimezoneFormSubmit.bind(this);
     this.handleEditStartFlow = this.handleEditStartFlow.bind(this);
     this.handleDeleteStartFlow = this.handleDeleteStartFlow.bind(this);
+    this.setNameFilter = this.setNameFilter.bind(this);
+    this.handleFilterByName = this.handleFilterByName.bind(this);
   }
 
   handleEditStartFlow(id) {
@@ -28,12 +30,18 @@ export class TimezonesPage extends Component {
     });
   }
 
+  setNameFilter(ev) {
+    this.setState({
+      nameFilter: ev.target.value,
+    });
+  }
+
   handleDeleteStartFlow(id) {
     this.props.deleteTimezone(id);
   }
 
   componentDidMount() {
-    this.props.fetchTimezones();
+    this.props.fetchTimezones(null, {});
 
     const { currentUser } = this.props;
     if (currentUser.role === 2) {
@@ -57,6 +65,17 @@ export class TimezonesPage extends Component {
     this.setState({
       selectedTimezoneEntity: null,
     });
+  }
+
+  handleFilterByName() {
+    const { nameFilter, currentNameFilter } = this.state;
+    if (nameFilter !== currentNameFilter) {
+      this.props.fetchTimezones(null, { nameFilter }).then(() => {
+        this.setState({
+          currentNameFilter: nameFilter,
+        });
+      });
+    }
   }
 
   renderTimezoneForm() {
@@ -99,12 +118,21 @@ export class TimezonesPage extends Component {
     );
   }
 
+  renderFilterByName() {
+    return (
+      <div className="timezone-filters-filter-by-name">
+        <input name="name-filter" value={this.state.nameFilter} onChange={this.setNameFilter} />
+        <button onClick={this.handleFilterByName}>Filter</button>
+      </div>
+    );
+  }
+
   renderTimezoneListFilters() {
     const { currentUser } = this.props;
     return (
       <div className="timezone-filters">
         {currentUser.role === 2 && this.renderUserFilter()}
-        <div>Filter by name</div>
+        {this.renderFilterByName()}
       </div>
     );
   }

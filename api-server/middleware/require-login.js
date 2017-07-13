@@ -34,5 +34,7 @@ export function prepareLogin(req, res, next) {
       req.decoded = decoded;
       return next();
     });
+  } else {
+    return next();
   }
 }

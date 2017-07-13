@@ -59,9 +59,13 @@ app.get('*', async (req, res) => {
     });
 
     await store.dispatch(fetchMe(jwt));
+    if (!store.getState().users.currentUser) {
+      res.clearCookie('jwt');
+      res.writeHead(302, req.url);
+      return res.end();
+    }
   }
 
-  console.log(store.getState());
 
   const html = ReactDOMServer.renderToString(
     <Provider store={store}>
