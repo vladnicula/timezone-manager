@@ -1,4 +1,4 @@
-export default function ({ serverSideContent, vendorBundleUrl, appBundleUrl }) {
+export default function ({ serverSideContent, vendorBundleUrl, appBundleUrl, initialState }) {
   return `
   <!DOCTYPE html>
     <html>
@@ -23,6 +23,7 @@ export default function ({ serverSideContent, vendorBundleUrl, appBundleUrl }) {
       <![endif]-->
 
       <main id="react-app">${serverSideContent}</main>
+      <script>window.__PRELOADED_STATE__=${JSON.stringify(initialState)}</script>
       <script type="text/javascript" src="${vendorBundleUrl}"></script>
       <script type="text/javascript" src="${appBundleUrl}"></script>
     </body>

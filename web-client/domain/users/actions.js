@@ -1,6 +1,9 @@
 const SET_USERS = 'tzm-users-set';
 export { SET_USERS };
 
+const SET_CURRENT_USER = 'tzm-current-user-set';
+export { SET_CURRENT_USER };
+
 const USERS_OPERATION_START = 'tzm-users-operation-start';
 export { USERS_OPERATION_START };
 

@@ -6,15 +6,20 @@ import {
   USERS_OPERATION_START,
   USERS_OPERATION_SUCCESS,
   USERS_OPERATION_ERROR,
+  SET_CURRENT_USER,
 } from './actions';
 
+import {
+  CLEAR_AUTH_TOKEN,
+} from '../auth/actions';
 
-const fetchUsers = () => async (dispatch) => {
+
+const fetchUsers = accessToken => async (dispatch) => {
   dispatch({
     type: USERS_OPERATION_START,
   });
 
-  const jwt = cookie.get('jwt');
+  const jwt = accessToken || cookie.get('jwt');
   const authOptions = {
     headers: {
       'x-access-token': jwt,
@@ -34,12 +39,12 @@ const fetchUsers = () => async (dispatch) => {
 
 export { fetchUsers };
 
-const fetchMe = () => async (dispatch) => {
+const fetchMe = accessToken => async (dispatch) => {
   dispatch({
     type: USERS_OPERATION_START,
   });
 
-  const jwt = cookie.get('jwt');
+  const jwt = accessToken || cookie.get('jwt');
   const authOptions = {
     headers: {
       'x-access-token': jwt,
@@ -52,8 +57,8 @@ const fetchMe = () => async (dispatch) => {
   );
 
   dispatch({
-    type: SET_USERS,
-    Users: response.data.users,
+    type: SET_CURRENT_USER,
+    currentUser: response.data.users[0],
   });
 };
 
@@ -197,6 +202,20 @@ const reducer = (state = {}, action = {}) => {
         working: false,
         error: action.error || 'unknown error',
       };
+
+    case SET_CURRENT_USER:
+      return {
+        ...state,
+        working: false,
+        currentUser: action.currentUser,
+      };
+
+    case CLEAR_AUTH_TOKEN:
+      return {
+        ...state,
+        currentUser: {},
+      };
+
     default:
       return state;
   }

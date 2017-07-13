@@ -6,6 +6,10 @@ import {
   CLEAR_AUTH_TOKEN,
 } from './actions';
 
+import {
+  fetchMe,
+} from '../users/';
+
 const authenticate = ({ username, password }) => async (dispatch) => {
   try {
     const response = await axios.post(
@@ -13,11 +17,14 @@ const authenticate = ({ username, password }) => async (dispatch) => {
       { username, password },
     );
 
-    cookie.set('jwt', response.data.token);
+    const jwt = response.data.token;
+
+    await dispatch(fetchMe(jwt));
+    cookie.set('jwt', jwt);
 
     dispatch({
       type: SET_AUTH_TOKEN,
-      token: response.data.token,
+      token: jwt,
     });
   } catch (err) {
     console.log('login error', err);

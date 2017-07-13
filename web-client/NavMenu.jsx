@@ -23,11 +23,13 @@ export class NavMenu extends Component {
   }
 
   render() {
+    const { currentUser } = this.props;
     return (
       <div className="navigation-menu">
         <NavLink to="/">Timezones</NavLink>
         <NavLink to="/users">Users</NavLink>
         <button onClick={this.handleLogout}>Logout</button>
+        <span>user: {currentUser.username} role: {currentUser.role}</span>
       </div>
     );
   }
@@ -35,8 +37,10 @@ export class NavMenu extends Component {
 
 NavMenu.propTypes = {
   logout: PropTypes.func.isRequired,
+  currentUser: PropTypes.object.isRequired,
 };
 
 export default connect(
-  null, dispatch => bindActionCreators({ logout }, dispatch),
+  state => ({ currentUser: state.users.currentUser }),
+  dispatch => bindActionCreators({ logout }, dispatch),
 )(NavMenu);

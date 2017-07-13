@@ -19,6 +19,7 @@ import pageTempalte from './template';
 
 import store from '../domain';
 import { SET_AUTH_TOKEN } from '../domain/auth/actions';
+import { fetchMe } from '../domain/users';
 
 const app = express();
 
@@ -47,7 +48,7 @@ app.use(cookieParser());
 
 app.use('/dist', express.static('dist'));
 
-app.get('*', (req, res) => {
+app.get('*', async (req, res) => {
   const context = {};
   const { jwt } = req.cookies || {};
   if (jwt) {
@@ -55,7 +56,10 @@ app.get('*', (req, res) => {
       type: SET_AUTH_TOKEN,
       token: jwt,
     });
+
+    await store.dispatch(fetchMe(jwt));
   }
+
   const html = ReactDOMServer.renderToString(
     <Provider store={store}>
       <StaticRouter location={req.url} context={context}>
@@ -75,6 +79,7 @@ app.get('*', (req, res) => {
       serverSideContent: html,
       appBundleUrl: app.get('APP_BUNDLE_PATH'),
       vendorBundleUrl: app.get('VENDOR_BUNDLE_PATH'),
+      initialState: store.getState(),
     }));
     res.end();
   }
