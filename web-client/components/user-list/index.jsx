@@ -13,11 +13,15 @@ const UserListItem = (props) => {
   );
 };
 
+UserListItem.defaultProps = {
+  role: 0,
+  password: '',
+};
 
 UserListItem.propTypes = {
   _id: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
-  role: PropTypes.string.isRequired,
+  role: PropTypes.number,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };

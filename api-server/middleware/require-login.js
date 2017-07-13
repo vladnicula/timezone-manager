@@ -22,3 +22,17 @@ export default function requireLogin(req, res, next) {
 
   return true;
 }
+
+export function prepareLogin(req, res, next) {
+  const authToken = req.headers['x-access-token'];
+
+  if (authToken) {
+    jwt.verify(authToken, req.app.get('JWT_SECRET'), (err, decoded) => {
+      if (err) {
+        return next();
+      }
+      req.decoded = decoded;
+      return next();
+    });
+  }
+}

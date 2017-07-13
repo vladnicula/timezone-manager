@@ -11,9 +11,9 @@ export default class UserForm extends Component {
       role: providedRole,
     };
 
-    this.setUserName = this.setValueOnChange.bind(this, 'name');
-    this.setPassword = this.setValueOnChange.bind(this, 'city');
-    this.setRole = this.setValueOnChange.bind(this, 'offset');
+    this.setUserName = this.setValueOnChange.bind(this, 'username');
+    this.setPassword = this.setValueOnChange.bind(this, 'password');
+    this.setRole = this.setValueOnChange.bind(this, 'role');
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
   }
@@ -21,13 +21,13 @@ export default class UserForm extends Component {
   componentWillReceiveProps(nextProps) {
     const { providedUserName, providedPassword, providedRole } = nextProps;
     if (providedUserName !== undefined) {
-      this.setState({ name: providedUserName });
+      this.setState({ username: providedUserName });
     }
     if (providedPassword !== undefined) {
-      this.setState({ city: providedPassword });
+      this.setState({ password: providedPassword });
     }
     if (providedRole !== undefined) {
-      this.setState({ offset: providedRole });
+      this.setState({ role: providedRole });
     }
   }
 
@@ -38,9 +38,9 @@ export default class UserForm extends Component {
   }
 
   handleSubmit() {
-    const { name, city, offset } = this.state;
+    const { username, password, role } = this.state;
     const { onSubmit } = this.props;
-    onSubmit({ name, city, offset });
+    onSubmit({ username, password, role });
   }
 
   handleKeyUp(ev) {
@@ -57,7 +57,7 @@ export default class UserForm extends Component {
         <div className="field" onKeyUp={this.handleKeyUp}>
           <input value={username} onChange={this.setUserName} type="text" name="timezone-name" />
           <br />
-          <input value={password} onChange={this.setPassword} type="text" name="timezone-city" />
+          <input value={password} onChange={this.setPassword} type="password" name="timezone-city" />
           <br />
           <input value={role} onChange={this.setRole} type="text" name="timezone-offset" />
           <br />

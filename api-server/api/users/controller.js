@@ -47,11 +47,45 @@ export default {
   },
 
   register: async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, role } = req.body;
+    const decoded = req.decoded;
+    if (role) {
+      // see if we have decode info
+      if (!decoded) {
+        return res.status(403).json({
+          status: 'error',
+          message: 'Cannot create user with role. Authenticatied user not found.',
+        });
+      }
+
+      // se if token is really a valid user
+      // TODO move into middleware
+      const currentUser = await User.findById(decoded._id).select('_id, username, role');
+
+      if (!currentUser) {
+        return res.status(403).json({
+          status: 'error',
+          message: 'Cannot create user with role. Authenticatied user not found.',
+        });
+      }
+
+      const authRole = currentUser.role;
+       /**
+         * Only admins edit admins
+         */
+      if ((authRole < 1 && role > 0) || (role === 2 && authRole < 2)) {
+        return res.status(403).json({
+          status: 'error',
+          message: 'Logged in user cannot set that role to a new user',
+          debug: { user: currentUser.json(), requestedRole: role },
+        });
+      }
+    }
 
     const resopnse = await User.create({
       username,
       password,
+      role: role || 0,
     });
 
     return res.json({

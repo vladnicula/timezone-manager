@@ -3,6 +3,7 @@ import thunk from 'redux-thunk';
 
 import auth from './auth';
 import timezones from './timezones';
+import users from './users';
 
 // See https://github.com/zalmoxisus/redux-devtools-extension#usage
 const getComposeEnhancers = () => {
@@ -15,6 +16,7 @@ const getComposeEnhancers = () => {
 const reducer = combineReducers({
   auth,
   timezones,
+  users,
 });
 
 const store = createStore(

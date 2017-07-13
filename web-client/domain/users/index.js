@@ -28,7 +28,7 @@ const fetchUsers = () => async (dispatch) => {
 
   dispatch({
     type: SET_USERS,
-    Users: response.data.users,
+    users: response.data.users,
   });
 };
 
@@ -177,7 +177,7 @@ const reducer = (state = {}, action = {}) => {
   switch (action.type) {
     case SET_USERS:
       return { ...state,
-        Users: action.Users,
+        users: action.users,
       };
     case USERS_OPERATION_START:
       return {

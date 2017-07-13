@@ -2,7 +2,7 @@ import express from 'express';
 
 import asyncRouteHandler from '../../utils/async-route-handler';
 
-import requireLogin from '../../middleware/require-login';
+import requireLogin, { prepareLogin } from '../../middleware/require-login';
 import controller from './controller';
 
 export default function () {
@@ -32,6 +32,7 @@ export default function () {
    */
   userApi.post(
     '/user',
+    prepareLogin,
     asyncRouteHandler(controller.register),
   );
 

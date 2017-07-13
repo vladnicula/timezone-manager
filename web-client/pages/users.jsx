@@ -74,11 +74,11 @@ export class UsersPage extends Component {
     if (selectedUserEntity) {
       userFormProps.providedUserName = selectedUserEntity.username;
       userFormProps.providedPassword = selectedUserEntity.password;
-      userFormProps.role = selectedUserEntity.role;
+      userFormProps.providedRole = selectedUserEntity.role;
     } else {
       userFormProps.providedUserName = '';
       userFormProps.providedPassword = '';
-      userFormProps.role = 0;
+      userFormProps.providedRole = 0;
     }
 
     return (<UserForm {...userFormProps} />);
@@ -123,7 +123,7 @@ UsersPage.propTypes = {
 };
 
 export default connect(
-  null,
+  state => state.users,
   dispatch => bindActionCreators({
     fetchUsers, updateUser, deleteUser, createUser,
   }, dispatch),
