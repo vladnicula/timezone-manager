@@ -1,9 +1,9 @@
 import test from 'ava';
 import supertest from 'supertest-as-promised';
 
-import serverSetup from '../../server/setup';
-import * as config from '../../server/config';
-import { SUPER_ADMIN } from '../../server/setup/fixtures/Users';
+import serverSetup from '../../api-server/setup';
+import * as config from '../../api-server/config';
+import { SUPER_ADMIN } from '../../api-server/setup/fixtures/Users';
 
 let server;
 test.before('api server startup', async () => {

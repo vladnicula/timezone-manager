@@ -1,8 +1,8 @@
 import test from 'ava';
 import supertest from 'supertest-as-promised';
 
-import serverSetup from '../../server/setup';
-import * as config from '../../server/config';
+import serverSetup from '../../api-server/setup';
+import * as config from '../../api-server/config';
 
 
 let server;

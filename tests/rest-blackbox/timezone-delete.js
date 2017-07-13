@@ -1,10 +1,10 @@
 import test from 'ava';
 import supertest from 'supertest-as-promised';
 
-import serverSetup from '../../server/setup';
-import * as config from '../../server/config';
+import serverSetup from '../../api-server/setup';
+import * as config from '../../api-server/config';
 
-import { SUPER_ADMIN } from '../../server/setup/fixtures/Users';
+import { SUPER_ADMIN } from '../../api-server/setup/fixtures/Users';
 import { createUserAndGetId, authUserAndGetToken, patchUser } from './utils';
 
 // TODO only run fixtures once for all test cases (in all files)
