@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import Routes from './routes';
+import App from './App';
 import store from './domain';
 import { SET_AUTH_TOKEN } from './domain/auth/actions';
 
@@ -20,7 +20,7 @@ store.dispatch({
 
 // import './styles/index.scss';
 ReactDOM.render(
-  <Provider store={store}><Router><Routes /></Router></Provider>,
+  <Provider store={store}><Router><App /></Router></Provider>,
   document.getElementById('react-app'),
 );
 

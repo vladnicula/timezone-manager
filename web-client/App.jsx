@@ -6,12 +6,10 @@ import {
   Route, Link, IndexRoute, Switch,
 } from 'react-router-dom';
 
-import Layout from '../layout';
-import Login from '../pages/login';
-
-
-const Page1 = () => (<div>page 1</div>);
-const Page2 = () => (<div>page 2</div>);
+import Layout from './components/layout';
+import Login from './pages/login';
+import Timezones from './pages/timezones';
+import Users from './pages/users';
 
 class App extends Component {
   constructor(props) {
@@ -35,8 +33,8 @@ class App extends Component {
     return (
       <Layout>
         <Switch>
-          <Route exact path="/" component={Page1} />
-          <Route exact path="/page2" component={Page2} />
+          <Route exact path="/" component={Timezones} />
+          <Route exact path="/users" component={Users} />
         </Switch>
       </Layout>
     );

@@ -11,7 +11,7 @@ import webpack from 'webpack';
 
 import { WEB_SERVER_PORT } from '../config';
 
-import Routes from '../routes';
+import App from '../App';
 
 import webpackConfig from '../build/webpack.client.config.dev.js';
 
@@ -59,7 +59,7 @@ app.get('*', (req, res) => {
   const html = ReactDOMServer.renderToString(
     <Provider store={store}>
       <StaticRouter location={req.url} context={context}>
-        <Routes />
+        <App />
       </StaticRouter>
     </Provider>,
   );
