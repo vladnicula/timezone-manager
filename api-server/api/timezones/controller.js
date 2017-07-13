@@ -29,7 +29,10 @@ export default {
           timezones: [],
         });
       }
-      query.$text = { $search: filterName };
+      // query.$text = { $search: `"${filterName}"` };
+      query.name = {
+        $regex: `.*${filterName}.*`,
+      };
     }
 
     let timezonesOp = Timezone.find(query);
