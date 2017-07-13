@@ -17,7 +17,7 @@ import webpackConfig from '../build/webpack.client.config.dev.js';
 
 import pageTempalte from './template';
 
-import store from '../domain';
+import configureStore from '../domain';
 import { SET_AUTH_TOKEN } from '../domain/auth/actions';
 import { fetchMe } from '../domain/users';
 
@@ -51,6 +51,7 @@ app.use('/dist', express.static('dist'));
 app.get('*', async (req, res) => {
   const context = {};
   const { jwt } = req.cookies || {};
+  const store = configureStore();
   if (jwt) {
     store.dispatch({
       type: SET_AUTH_TOKEN,
@@ -59,6 +60,8 @@ app.get('*', async (req, res) => {
 
     await store.dispatch(fetchMe(jwt));
   }
+
+  console.log(store.getState());
 
   const html = ReactDOMServer.renderToString(
     <Provider store={store}>

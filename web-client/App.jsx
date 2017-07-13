@@ -28,19 +28,21 @@ class App extends Component {
     const {
       token,
       match,
+      currentUser,
     } = this.props;
 
     if (!token) {
       return (
         <Layout>
           <Route
-            render={() => (
-              match.path !== '/' ? (
-                <Redirect to="/" />
-              ) : (
-                <Login />
-              )
-            )}
+            render={
+              () => {
+                if (match.path !== '/') {
+                  return (<Redirect to="/" />);
+                }
+                return (<Login />);
+              }
+            }
           />
         </Layout>
       );
@@ -51,16 +53,35 @@ class App extends Component {
         <NavMenu />
         <Switch>
           <Route exact path="/" component={Timezones} />
-          <Route exact path="/users" component={Users} />
+          <Route
+            exact
+            path="/users"
+            render={() => {
+              if (currentUser.role) {
+                return <Users />;
+              }
+              return <Redirect to="/" />;
+            }}
+          />
         </Switch>
       </Layout>
     );
   }
 }
 
+App.defaultProps = {
+  token: '',
+  currentUser: {},
+  match: {},
+};
+
 App.propTypes = {
   token: PropTypes.string,
+  currentUser: PropTypes.object,
   match: PropTypes.object,
 };
 
-export default withRouter(connect(state => (state.auth))(App));
+export default withRouter(connect(state => ({
+  token: state.auth.token,
+  currentUser: state.users.currentUser,
+}))(App));

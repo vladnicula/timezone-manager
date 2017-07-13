@@ -8,11 +8,11 @@ import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import App from './App';
-import store from './domain';
+import configureStore from './domain';
 import { SET_AUTH_TOKEN } from './domain/auth/actions';
 
 const token = Cookies.get('jwt');
-
+const store = configureStore();
 store.dispatch({
   type: SET_AUTH_TOKEN,
   token,
