@@ -24,9 +24,9 @@ export default {
     const { id } = req.params;
     const { _id: authId } = req.decoded;
     const currentUser = await User.findById(authId);
-    const target = await User.findByIdAndRemove(id);
+    const target = await User.findById(id);
 
-    if (!currentUser.role || target.role > currentUser.role) {
+    if (!currentUser || !currentUser.role || target.role > currentUser.role) {
       return res.status(403).json({
         status: 'error',
         message: 'Cannot delete this user',
