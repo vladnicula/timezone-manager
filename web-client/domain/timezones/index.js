@@ -73,6 +73,45 @@ const createTimezone = timezoneData => async (dispatch) => {
 
 export { createTimezone };
 
+
+/**
+ * Create a timezones and then fetch entire list of timezones
+ * either for current user or for another user, with or without filters
+ * and pagination
+ */
+const deleteTimezone = timezoneId => async (dispatch) => {
+  dispatch({
+    type: TIMEZONE_OPERATION_START,
+  });
+
+  const jwt = cookie.get('jwt');
+  const authOptions = {
+    headers: {
+      'x-access-token': jwt,
+    },
+  };
+
+  try {
+    await axios.delete(
+      `http://localhost:3185/api/v1/timezone/${timezoneId}`,
+      authOptions,
+    );
+
+    await fetchTimezones()(dispatch);
+
+    dispatch({
+      type: TIMEZONE_OPERATION_SUCCESS,
+    });
+  } catch (err) {
+    dispatch({
+      type: TIMEZONE_OPERATION_ERROR,
+      error: err,
+    });
+  }
+};
+
+export { deleteTimezone };
+
 const reducer = (state = {}, action = {}) => {
   switch (action.type) {
     case SET_TIMEZONES:
