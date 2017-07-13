@@ -71,8 +71,6 @@ const createTimezone = timezoneData => async (dispatch) => {
       authOptions,
     );
 
-    await fetchTimezones(jwt, {})(dispatch);
-
     dispatch({
       type: TIMEZONE_OPERATION_SUCCESS,
     });
@@ -107,8 +105,6 @@ const deleteTimezone = timezoneId => async (dispatch) => {
       `http://localhost:3185/api/v1/timezone/${timezoneId}`,
       authOptions,
     );
-
-    await fetchTimezones(jwt, {})(dispatch);
 
     dispatch({
       type: TIMEZONE_OPERATION_SUCCESS,
@@ -145,8 +141,6 @@ const updateTimezone = (timezoneId, patchPayload) => async (dispatch) => {
       patchPayload,
       authOptions,
     );
-
-    await fetchTimezones(jwt, {})(dispatch);
 
     dispatch({
       type: TIMEZONE_OPERATION_SUCCESS,

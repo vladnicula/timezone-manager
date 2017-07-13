@@ -15,6 +15,8 @@ export class TimezonesPage extends Component {
     super(props);
     this.state = {
       selectedTimezoneEntity: null,
+      userTargetId: props.currentUser._id,
+      nameFilter: '',
     };
 
     this.handleTimezoneFormSubmit = this.handleTimezoneFormSubmit.bind(this);
@@ -22,6 +24,7 @@ export class TimezonesPage extends Component {
     this.handleDeleteStartFlow = this.handleDeleteStartFlow.bind(this);
     this.setNameFilter = this.setNameFilter.bind(this);
     this.handleFilterByName = this.handleFilterByName.bind(this);
+    this.handleUserTargetIdChanged = this.handleUserTargetIdChanged.bind(this);
   }
 
   handleEditStartFlow(id) {
@@ -36,12 +39,22 @@ export class TimezonesPage extends Component {
     });
   }
 
-  handleDeleteStartFlow(id) {
-    this.props.deleteTimezone(id);
+  async handleDeleteStartFlow(id) {
+    try {
+      await this.props.deleteTimezone(id);
+    } catch (err) {
+      console.error('delete action failed', err);
+    }
+
+    try {
+      await this.refreshTimezoneList();
+    } catch (err) {
+      console.error('timezone list refresh after delete action failed', err);
+    }
   }
 
   componentDidMount() {
-    this.props.fetchTimezones(null, {});
+    this.refreshTimezoneList();
 
     const { currentUser } = this.props;
     if (currentUser.role === 2) {
@@ -52,12 +65,21 @@ export class TimezonesPage extends Component {
     }
   }
 
-  handleTimezoneFormSubmit(newTimezoneData) {
+  componentWillUnmount() {
+    this.setState({
+      selectedTimezoneEntity: null,
+      userTargetId: this.props.currentUser._id,
+      nameFilter: '',
+    });
+  }
+
+  async handleTimezoneFormSubmit(newTimezoneData) {
     const { selectedTimezoneEntity } = this.state;
     if (selectedTimezoneEntity) {
-      this.props.updateTimezone(
+      await this.props.updateTimezone(
         selectedTimezoneEntity._id, { ...selectedTimezoneEntity, ...newTimezoneData },
       );
+      await this.refreshTimezoneList();
     } else {
       this.props.createTimezone(newTimezoneData);
     }
@@ -68,14 +90,18 @@ export class TimezonesPage extends Component {
   }
 
   handleFilterByName() {
-    const { nameFilter, currentNameFilter } = this.state;
-    if (nameFilter !== currentNameFilter) {
-      this.props.fetchTimezones(null, { nameFilter }).then(() => {
-        this.setState({
-          currentNameFilter: nameFilter,
-        });
-      });
-    }
+    this.refreshTimezoneList();
+  }
+
+  handleUserTargetIdChanged(event) {
+    const userId = event.target.value;
+    this.setState({ userTargetId: userId }, () => (this.refreshTimezoneList()));
+  }
+
+  async refreshTimezoneList() {
+    // todo add jwt here as well
+    const { nameFilter, userTargetId: userId } = this.state;
+    await this.props.fetchTimezones(null, { userId, nameFilter });
   }
 
   renderTimezoneForm() {
@@ -113,7 +139,9 @@ export class TimezonesPage extends Component {
     return (
       <div>
         <div>Filter by username:</div>
-        {users.map(user => <div>{user._id} - {user.username}</div>)}
+        <select onChange={this.handleUserTargetIdChanged} value={this.state.userTargetId}>
+          {users.map(user => <option key={user._id} value={user._id}>{user.username}</option>)}
+        </select>
       </div>
     );
   }
