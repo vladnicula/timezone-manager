@@ -57,6 +57,7 @@ export class TimezonesPage extends Component {
     this.refreshTimezoneList();
 
     const { currentUser } = this.props;
+
     if (currentUser.role === 2) {
       const { users } = this.props;
       if (!users.length) {
@@ -79,10 +80,11 @@ export class TimezonesPage extends Component {
       await this.props.updateTimezone(
         selectedTimezoneEntity._id, { ...selectedTimezoneEntity, ...newTimezoneData },
       );
-      await this.refreshTimezoneList();
     } else {
-      this.props.createTimezone(newTimezoneData);
+      await this.props.createTimezone(newTimezoneData);
     }
+
+    await this.refreshTimezoneList();
 
     this.setState({
       selectedTimezoneEntity: null,

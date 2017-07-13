@@ -46,11 +46,14 @@ const signup = ({ username, password }) => async (dispatch) => {
       { username, password },
     );
 
-    cookie.set('jwt', response.data.token);
+    const jwt = response.data.token;
+
+    await dispatch(fetchMe(jwt));
+    cookie.set('jwt', jwt);
 
     dispatch({
       type: SET_AUTH_TOKEN,
-      token: response.data.token,
+      token: jwt,
     });
   } catch (err) {
     console.log('signup error', err);

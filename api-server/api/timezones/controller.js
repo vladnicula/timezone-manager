@@ -7,7 +7,7 @@ export default {
     const { user_id: userId, before, limit, filter_name: filterName } = req.query;
     const { role: authRole, _id: authId } = decoded;
 
-    if (userId !== undefined && authRole !== 2) {
+    if ((userId !== undefined && userId !== authId) && authRole !== 2) {
       return res.status(403).json({
         status: 'error',
         message: 'Cannot access timezone list of target account.',
