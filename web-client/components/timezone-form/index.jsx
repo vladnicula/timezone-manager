@@ -20,10 +20,10 @@ export default class TimezoneForm extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { providedName, providedCity, providedOffset } = nextProps;
-    if (providedName) {
+    if (providedName !== undefined) {
       this.setState({ name: providedName });
     }
-    if (providedCity) {
+    if (providedCity !== undefined) {
       this.setState({ city: providedCity });
     }
     if (providedOffset !== undefined) {
@@ -40,7 +40,6 @@ export default class TimezoneForm extends Component {
   handleSubmit() {
     const { name, city, offset } = this.state;
     const { onSubmit } = this.props;
-    console.log('validate on submit timezone', { name, city, offset });
     onSubmit({ name, city, offset });
   }
 
@@ -74,7 +73,7 @@ const emptyFn = () => {};
 TimezoneForm.defaultProps = {
   providedName: '',
   providedCity: '',
-  providedOffset: 0,
+  providedOffset: '',
   onSubmit: emptyFn,
 };
 

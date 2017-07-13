@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { createTimezone, fetchTimezones, deleteTimezone } from '../domain/timezones';
+import { createTimezone, updateTimezone, fetchTimezones, deleteTimezone } from '../domain/timezones';
 
 import TimezoneForm from '../components/timezone-form';
 import TimezoneList from '../components/timezone-list';
@@ -22,7 +22,9 @@ export class TimezonesPage extends Component {
   }
 
   handleEditStartFlow(id) {
-    console.log('start edit', id, this.state);
+    this.setState({
+      selectedTimezoneEntity: this.props.timezones.find(timezone => timezone._id === id),
+    });
   }
 
   handleDeleteStartFlow(id) {
@@ -35,15 +37,17 @@ export class TimezonesPage extends Component {
 
   handleTimezoneFormSubmit(newTimezoneData) {
     const { selectedTimezoneEntity } = this.state;
-    const { createTimezone, updateTimezone } = this.props;
     if (selectedTimezoneEntity) {
-      // edit/update flow, must update existing entity
-      console.log('edit', selectedTimezoneEntity, updateTimezone);
+      this.props.updateTimezone(
+        selectedTimezoneEntity._id, { ...selectedTimezoneEntity, ...newTimezoneData },
+      );
     } else {
-      // create flow
-      console.log('create', newTimezoneData, createTimezone);
       this.props.createTimezone(newTimezoneData);
     }
+
+    this.setState({
+      selectedTimezoneEntity: null,
+    });
   }
 
   renderTimezoneForm() {
@@ -56,6 +60,10 @@ export class TimezonesPage extends Component {
       timezoneFormProps.providedName = selectedTimezoneEntity.name;
       timezoneFormProps.providedCity = selectedTimezoneEntity.city;
       timezoneFormProps.providedOffset = selectedTimezoneEntity.offset;
+    } else {
+      timezoneFormProps.providedName = '';
+      timezoneFormProps.providedCity = '';
+      timezoneFormProps.providedOffset = 0;
     }
 
     return (<TimezoneForm {...timezoneFormProps} />);
@@ -96,6 +104,7 @@ TimezonesPage.defaultProps = {
 TimezonesPage.propTypes = {
   timezones: PropTypes.arrayOf(PropTypes.object),
   createTimezone: PropTypes.func.isRequired,
+  updateTimezone: PropTypes.func.isRequired,
   deleteTimezone: PropTypes.func.isRequired,
   fetchTimezones: PropTypes.func.isRequired,
 };
@@ -104,7 +113,7 @@ export default connect(
   state => state.timezones,
   dispatch => bindActionCreators({
     createTimezone,
-    updateTimezone: () => {},
+    updateTimezone,
     deleteTimezone,
     fetchTimezones,
   }, dispatch),

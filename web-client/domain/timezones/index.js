@@ -75,9 +75,7 @@ export { createTimezone };
 
 
 /**
- * Create a timezones and then fetch entire list of timezones
- * either for current user or for another user, with or without filters
- * and pagination
+ * Deletes a timezone. Assumes api checks roles and priviledges
  */
 const deleteTimezone = timezoneId => async (dispatch) => {
   dispatch({
@@ -111,6 +109,44 @@ const deleteTimezone = timezoneId => async (dispatch) => {
 };
 
 export { deleteTimezone };
+
+/**
+ * Updates a timezone identified by id. Assumes roles and priviledges
+ * are checked by the api.
+ */
+const updateTimezone = (timezoneId, patchPayload) => async (dispatch) => {
+  dispatch({
+    type: TIMEZONE_OPERATION_START,
+  });
+
+  const jwt = cookie.get('jwt');
+  const authOptions = {
+    headers: {
+      'x-access-token': jwt,
+    },
+  };
+
+  try {
+    await axios.patch(
+      `http://localhost:3185/api/v1/timezone/${timezoneId}`,
+      patchPayload,
+      authOptions,
+    );
+
+    await fetchTimezones()(dispatch);
+
+    dispatch({
+      type: TIMEZONE_OPERATION_SUCCESS,
+    });
+  } catch (err) {
+    dispatch({
+      type: TIMEZONE_OPERATION_ERROR,
+      error: err,
+    });
+  }
+};
+
+export { updateTimezone };
 
 const reducer = (state = {}, action = {}) => {
   switch (action.type) {
