@@ -6,10 +6,17 @@ import {
   Route, Link, IndexRoute, Switch,
 } from 'react-router-dom';
 
+import {
+  withRouter,
+} from 'react-router';
+
+import NavMenu from './NavMenu';
+
 import Layout from './components/layout';
 import Login from './pages/login';
 import Timezones from './pages/timezones';
 import Users from './pages/users';
+
 
 class App extends Component {
   constructor(props) {
@@ -32,6 +39,7 @@ class App extends Component {
 
     return (
       <Layout>
+        <NavMenu />
         <Switch>
           <Route exact path="/" component={Timezones} />
           <Route exact path="/users" component={Users} />
@@ -45,4 +53,4 @@ App.propTypes = {
   token: PropTypes.string,
 };
 
-export default connect(state => (state.auth))(App);
+export default withRouter(connect(state => (state.auth))(App));
