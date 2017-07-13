@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+
+import { createTimezone, fetchTimezones } from '../domain/timezones';
 
 import TimezoneForm from '../components/timezone-form';
 import TimezoneList from '../components/timezone-list';
@@ -26,6 +29,10 @@ export class TimezonesPage extends Component {
     console.log('start delete flow', id, this.state);
   }
 
+  componentDidMount() {
+    this.props.fetchTimezones();
+  }
+
   handleTimezoneFormSubmit(newTimezoneData) {
     const { selectedTimezoneEntity } = this.state;
     const { createTimezone, updateTimezone } = this.props;
@@ -35,6 +42,7 @@ export class TimezonesPage extends Component {
     } else {
       // create flow
       console.log('create', newTimezoneData, createTimezone);
+      createTimezone(newTimezoneData);
     }
   }
 
@@ -54,11 +62,12 @@ export class TimezonesPage extends Component {
   }
 
   renderTimezoneWrapper() {
+    const { timezones } = this.props;
     return (
       <TimezoneList
         onEditReuqest={this.handleEditStartFlow}
         onDeleteRequest={this.handleDeleteStartFlow}
-        timezones={[]}
+        timezones={timezones}
       />
     );
   }
@@ -80,11 +89,20 @@ export class TimezonesPage extends Component {
   }
 }
 
+TimezonesPage.defaultProps = {
+  timezones: [],
+};
+
+TimezonesPage.propTypes = {
+  timezones: PropTypes.arrayOf(PropTypes.object),
+};
+
 export default connect(
-  null,
+  state => state.timezones,
   dispatch => bindActionCreators({
-    createTimezone: () => {},
+    createTimezone,
     updateTimezone: () => {},
     deleteTimezone: () => {},
+    fetchTimezones,
   }, dispatch),
 )(TimezonesPage);

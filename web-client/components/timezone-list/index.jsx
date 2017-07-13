@@ -47,7 +47,7 @@ export default class TimezoneList extends Component {
 
   renderTimezone(timezone) {
     return (
-      <TimezoneListItem {...timezone} onEdit={this.handleEdit} onDelete={this.handleDelete} />
+      <TimezoneListItem key={timezone._id} {...timezone} onEdit={this.handleEdit} onDelete={this.handleDelete} />
     );
   }
 

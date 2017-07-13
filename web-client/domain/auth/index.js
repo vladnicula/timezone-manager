@@ -53,14 +53,14 @@ const signup = ({ username, password }) => async (dispatch) => {
 export { signup };
 
 
-const reducer = (state, action = {}) => {
+const reducer = (state = {}, action = {}) => {
   switch (action.type) {
     case SET_AUTH_TOKEN:
       return { ...state, token: action.token };
     case CLEAR_AUTH_TOKEN:
       return { ...state, token: null };
     default:
-      return {};
+      return state;
   }
 };
 
