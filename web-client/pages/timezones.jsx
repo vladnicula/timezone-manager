@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { createTimezone, updateTimezone, fetchTimezones, deleteTimezone } from '../domain/timezones';
+import { fetchUsers } from '../domain/users';
 
 import TimezoneForm from '../components/timezone-form';
 import TimezoneList from '../components/timezone-list';
@@ -33,6 +34,14 @@ export class TimezonesPage extends Component {
 
   componentDidMount() {
     this.props.fetchTimezones();
+
+    const { currentUser } = this.props;
+    if (currentUser.role === 2) {
+      const { users } = this.props;
+      if (!users.length) {
+        this.props.fetchUsers();
+      }
+    }
   }
 
   handleTimezoneFormSubmit(newTimezoneData) {
@@ -80,14 +89,35 @@ export class TimezonesPage extends Component {
     );
   }
 
-  render() {
-    const { props, state } = this;
+  renderUserFilter() {
+    const { users } = this.props;
+    return (
+      <div>
+        <div>Filter by username:</div>
+        {users.map(user => <div>{user._id} - {user.username}</div>)}
+      </div>
+    );
+  }
 
+  renderTimezoneListFilters() {
+    const { currentUser } = this.props;
+    return (
+      <div className="timezone-filters">
+        {currentUser.role === 2 && this.renderUserFilter()}
+        <div>Filter by name</div>
+      </div>
+    );
+  }
+
+  render() {
     return (
       <div className="timezone-page">
         <h2>Timezones</h2>
         <div className="timezone-form-wrapper">
           {this.renderTimezoneForm()}
+        </div>
+        <div className="timezone-filters-wrapper">
+          {this.renderTimezoneListFilters()}
         </div>
         <div className="timezone-list-wrapper">
           {this.renderTimezoneWrapper()}
@@ -99,22 +129,32 @@ export class TimezonesPage extends Component {
 
 TimezonesPage.defaultProps = {
   timezones: [],
+  currentUser: {},
+  users: [],
 };
 
 TimezonesPage.propTypes = {
+  currentUser: PropTypes.object,
+  users: PropTypes.arrayOf(PropTypes.object),
   timezones: PropTypes.arrayOf(PropTypes.object),
   createTimezone: PropTypes.func.isRequired,
   updateTimezone: PropTypes.func.isRequired,
   deleteTimezone: PropTypes.func.isRequired,
   fetchTimezones: PropTypes.func.isRequired,
+  fetchUsers: PropTypes.func.isRequired,
 };
 
 export default connect(
-  state => state.timezones,
+  state => ({
+    timezones: state.timezones.timezones,
+    currentUser: state.users.currentUser,
+    users: state.users.users,
+  }),
   dispatch => bindActionCreators({
     createTimezone,
     updateTimezone,
     deleteTimezone,
     fetchTimezones,
+    fetchUsers,
   }, dispatch),
 )(TimezonesPage);
