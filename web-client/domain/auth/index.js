@@ -52,6 +52,14 @@ const signup = ({ username, password }) => async (dispatch) => {
 
 export { signup };
 
+const logout = () => {
+  cookie.remove('jwt');
+  return {
+    type: CLEAR_AUTH_TOKEN,
+  };
+};
+
+export { logout };
 
 const reducer = (state = {}, action = {}) => {
   switch (action.type) {

@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import {
-  Route, Link, IndexRoute, Switch,
+  Route, Switch,
 } from 'react-router-dom';
 
 import {
-  withRouter,
+  withRouter, Redirect,
 } from 'react-router';
 
 import NavMenu from './NavMenu';
@@ -27,12 +27,21 @@ class App extends Component {
   render() {
     const {
       token,
+      match,
     } = this.props;
 
     if (!token) {
       return (
         <Layout>
-          <Route exact path="/" component={Login} />
+          <Route
+            render={() => (
+              match.path !== '/' ? (
+                <Redirect to="/" />
+              ) : (
+                <Login />
+              )
+            )}
+          />
         </Layout>
       );
     }
@@ -51,6 +60,7 @@ class App extends Component {
 
 App.propTypes = {
   token: PropTypes.string,
+  match: PropTypes.object,
 };
 
 export default withRouter(connect(state => (state.auth))(App));
