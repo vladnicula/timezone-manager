@@ -35,4 +35,12 @@ body {
   display: flex;
   align-items: center;
   color: #fff;
+  height: 100%;
+
+  .navigation-menu-user-info {
+    flex: 1;
+    line-height: 15px;
+    padding-right: 13px;
+    text-align: right;
+  }
 }

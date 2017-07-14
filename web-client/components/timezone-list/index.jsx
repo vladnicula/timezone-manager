@@ -1,13 +1,34 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import { EditIcon, DeleteIcon } from '../icons';
+
+if (process.env.BROWSER) {
+  require('./index.scss');
+}
+
 const TimezoneListItem = (props) => {
   const { name, city, offset, _id, onEdit, onDelete } = props;
   return (
     <div className="timezone-list-item" data-timezone-id={_id}>
-      {name} - {city} - {offset}
-      <div>
-        <span data-timezone-id={_id} onClick={onEdit}>Edit</span> | <span data-timezone-id={_id} onClick={onDelete}>Delete</span>
+      <div className="user-list-item-title">{name} - {city} - {offset}</div>
+      <div className="timezone-list-item-controls">
+        <span
+          tabIndex={0}
+          role="menuitem"
+          data-timezone-id={_id}
+          onClick={onEdit}
+        >
+          <EditIcon size={18} />
+        </span>
+        <span
+          tabIndex={0}
+          role="menuitem"
+          data-timezone-id={_id}
+          onClick={onDelete}
+        >
+          <DeleteIcon size={18} />
+        </span>
       </div>
     </div>
   );

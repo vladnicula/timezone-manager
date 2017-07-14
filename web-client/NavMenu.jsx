@@ -31,7 +31,10 @@ export class NavMenu extends Component {
         <NavLink to="/timezones">Timezones</NavLink>
         { (currentUser && currentUser.role !== 0) && <NavLink to="/users">Users</NavLink>}
         <div className="navigation-menu-user-details">
-          <div>user: {currentUser.username} role: {currentUser.role}</div>
+          <div className="navigation-menu-user-info">
+            <span>{currentUser.username}</span><br />
+            <span>role: {currentUser.role}</span>
+          </div>
           <Button onClick={this.handleLogout}>Logout</Button>
         </div>
       </div>
