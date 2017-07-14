@@ -1,0 +1,29 @@
+.timezone-filters-wrapper {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  background: #f3f3f3;
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-bottom: none;
+}
+
+.timezone-filters {
+  display: flex;
+  flex: 1;
+  min-width: 240px;
+  max-width: 640px;
+  flex-wrap: wrap;
+  margin-right: 16px;
+  
+  & > div {
+    flex: 1;
+    max-width: 320px;
+    min-width: 240px;
+    flex-shrink: 1;
+  }
+
+  & > div:first-child {
+    margin-right: 16px;
+  }
+}

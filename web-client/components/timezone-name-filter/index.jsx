@@ -44,6 +44,8 @@ class TimezoneNameFilter extends Component {
       <div className="timezone-filter-by-name">
         <label htmlFor="name-filter">
           Filter by name:
+        </label>
+        <div className="timezone-filter-by-name-input-line">
           <Input
             id="name-filter"
             name="name-filter"
@@ -51,9 +53,9 @@ class TimezoneNameFilter extends Component {
             onChange={this.setNameFilter}
             onKeyDown={this.handleKeyDown}
           />
-        </label>
-        <Button onClick={this.handleFilterApply}>Filter</Button>
-        <Button onClick={this.handleFilterClear}>Clear</Button>
+          <Button onClick={this.handleFilterApply}>Filter</Button>
+          <Button onClick={this.handleFilterClear}>Clear</Button>
+        </div>
       </div>
     );
   }

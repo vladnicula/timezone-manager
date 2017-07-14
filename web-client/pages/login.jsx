@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Button } from 'antd';
@@ -66,6 +67,11 @@ export class AuthenticatePage extends Component {
     );
   }
 }
+
+AuthenticatePage.propTypes = {
+  authenticate: PropTypes.func.isRequired,
+  signup: PropTypes.func.isRequired,
+};
 
 export default connect(
   null,

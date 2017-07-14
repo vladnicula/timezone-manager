@@ -69,7 +69,12 @@ export default class TimezoneList extends Component {
 
   renderTimezone(timezone) {
     return (
-      <TimezoneListItem key={timezone._id} {...timezone} onEdit={this.handleEdit} onDelete={this.handleDelete} />
+      <TimezoneListItem
+        key={timezone._id}
+        {...timezone}
+        onEdit={this.handleEdit}
+        onDelete={this.handleDelete}
+      />
     );
   }
 
@@ -79,6 +84,7 @@ export default class TimezoneList extends Component {
     return (
       <div className="timezone-list">
         {timezones.map(this.renderTimezone)}
+        {timezones.length === 0 && <p>No timezone records for this user</p>}
       </div>
     );
   }

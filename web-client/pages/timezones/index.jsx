@@ -4,16 +4,21 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 
-import { Button, Select, Input } from 'antd';
+import { Button, Select, Modal } from 'antd';
 
-import { createTimezone, updateTimezone, fetchTimezones, deleteTimezone } from '../domain/timezones';
-import { fetchUsers } from '../domain/users';
+import { createTimezone, updateTimezone, fetchTimezones, deleteTimezone } from '../../domain/timezones';
+import { fetchUsers } from '../../domain/users';
 
-import PageContent from '../components/page-content';
+import PageContent from '../../components/page-content';
 
-import TimezoneForm from '../components/timezone-form';
-import TimezoneList from '../components/timezone-list';
-import TimezoneNameFilter from '../components/timezone-name-filter';
+import TimezoneForm from '../../components/timezone-form';
+import TimezoneList from '../../components/timezone-list';
+import TimezoneNameFilter from '../../components/timezone-name-filter';
+import TimezoneUserFilter from '../../components/timezone-user-filter';
+
+if (process.env.BROWSER) {
+  require('./index.scss');
+}
 
 const Option = Select.Option;
 
@@ -25,29 +30,24 @@ export class TimezonesPage extends Component {
       selectedTimezoneEntity: null,
       userTargetId: props.currentUser._id,
       nameFilter: '',
+      modalVisible: false,
+      loading: false,
     };
 
     this.handleTimezoneFormSubmit = this.handleTimezoneFormSubmit.bind(this);
     this.handleEditStartFlow = this.handleEditStartFlow.bind(this);
     this.handleDeleteStartFlow = this.handleDeleteStartFlow.bind(this);
+    this.handleDeleteRequest = this.handleDeleteRequest.bind(this);
     this.setNameFilter = this.setNameFilter.bind(this);
     this.handleFilterByName = this.handleFilterByName.bind(this);
     this.handleUserTargetIdChanged = this.handleUserTargetIdChanged.bind(this);
     this.setTimezoneFormRef = this.setRef.bind(this, 'timezoneForm');
-  }
 
-  async handleDeleteStartFlow(id) {
-    try {
-      await this.props.deleteTimezone(id);
-    } catch (err) {
-      console.error('delete action failed', err);
-    }
+    this.handleTimezoneModalConfirm = this.handleTimezoneModalConfirm.bind(this);
+    this.handleTimezoneModalCancel = this.handleTimezoneModalCancel.bind(this);
 
-    try {
-      await this.refreshTimezoneList();
-    } catch (err) {
-      console.error('timezone list refresh after delete action failed', err);
-    }
+    this.handleTimezoneCreateRequest = this.handleTimezoneCreateRequest.bind(this);
+    this.handleTimezoneDeleteModalCancel = this.handleTimezoneDeleteModalCancel.bind(this);
   }
 
   componentDidMount() {
@@ -72,12 +72,6 @@ export class TimezonesPage extends Component {
   }
 
 
-  handleEditStartFlow(id) {
-    this.setState({
-      selectedTimezoneEntity: this.props.timezones.find(timezone => timezone._id === id),
-    });
-  }
-
   setNameFilter(ev) {
     this.setState({
       nameFilter: ev.target.value,
@@ -90,9 +84,63 @@ export class TimezonesPage extends Component {
     }
   }
 
+  async handleDeleteStartFlow() {
+    this.setState({ loading: true });
+    const { timezoneToDeleteById } = this.state;
+    try {
+      await this.props.deleteTimezone(timezoneToDeleteById);
+    } catch (err) {
+      console.error('delete action failed', err);
+    }
+
+    try {
+      await this.refreshTimezoneList();
+    } catch (err) {
+      console.error('timezone list refresh after delete action failed', err);
+    }
+
+    this.setState({
+      deleteModalVisible: false,
+      loading: false,
+      timezoneToDeleteById: false,
+    });
+  }
+
+  handleDeleteRequest(id) {
+    this.setState({
+      deleteModalVisible: true,
+      timezoneToDeleteById: id,
+    });
+  }
+
+  handleEditStartFlow(id) {
+    this.setState({
+      selectedTimezoneEntity: this.props.timezones.find(timezone => timezone._id === id),
+      modalVisible: true,
+    });
+  }
+
+
+  handleTimezoneModalConfirm() {
+    this.setState({ modalVisible: false });
+  }
+
+  handleTimezoneModalCancel() {
+    this.setState({ modalVisible: false });
+  }
+
+  handleTimezoneDeleteModalCancel() {
+    this.setState({ deleteModalVisible: false });
+  }
+
   async handleTimezoneFormSubmit() {
     const { selectedTimezoneEntity, userTargetId } = this.state;
     const newTimezoneData = this.timezoneForm.getFormData();
+
+    this.setState({
+      loading: true,
+    });
+
     if (selectedTimezoneEntity) {
       await this.props.updateTimezone(
         selectedTimezoneEntity._id, {
@@ -108,7 +156,19 @@ export class TimezonesPage extends Component {
     await this.refreshTimezoneList();
 
     this.setState({
-      selectedTimezoneEntity: null,
+      loading: false,
+    }, () => (
+        this.setState({
+          selectedTimezoneEntity: null,
+          modalVisible: false,
+        })
+      ),
+    );
+  }
+
+  handleTimezoneCreateRequest() {
+    this.setState({
+      modalVisible: true,
     });
   }
 
@@ -126,12 +186,15 @@ export class TimezonesPage extends Component {
     await this.props.fetchTimezones(null, { userId, nameFilter });
   }
 
-  renderTimezoneForm() {
-    const { selectedTimezoneEntity } = this.state;
+  renderTimezoneFormModal() {
+    const { selectedTimezoneEntity, modalVisible } = this.state;
     const timezoneFormProps = {
       onSubmit: this.handleTimezoneFormSubmit,
       ref: this.setTimezoneFormRef,
     };
+
+    const confirmLabel = selectedTimezoneEntity ? 'Save' : 'Create';
+    const modalTitle = selectedTimezoneEntity ? 'Update timezone' : 'Create Timezone';
 
     if (selectedTimezoneEntity) {
       timezoneFormProps.providedName = selectedTimezoneEntity.name;
@@ -144,10 +207,50 @@ export class TimezonesPage extends Component {
     }
 
     return (
-      <div>
+      <Modal
+        visible={modalVisible}
+        title={modalTitle}
+        onOk={this.handleTimezoneModalConfirm}
+        onCancel={this.handleTimezoneModalCancel}
+        footer={[
+          <Button onClick={this.handleTimezoneModalCancel}>Cancel</Button>,
+          <Button
+            key="submit"
+            type="primary"
+            loading={this.state.loading}
+            onClick={this.handleTimezoneFormSubmit}
+          >
+            {confirmLabel}
+          </Button>,
+        ]}
+      >
         <TimezoneForm {...timezoneFormProps} />
-        <Button onClick={this.handleTimezoneFormSubmit}>Save</Button>
-      </div>
+      </Modal>
+    );
+  }
+
+  renderDeleteConfirmModal() {
+    const { deleteModalVisible } = this.state;
+    return (
+      <Modal
+        visible={deleteModalVisible}
+        title="Confirm Deleteion of Timezone"
+        onOk={() => this.handleDeleteStartFlow()}
+        onCancel={this.handleTimezoneDeleteModalCancel}
+        footer={[
+          <Button onClick={this.handleTimezoneDeleteModalCancel}>Cancel</Button>,
+          <Button
+            key="submit"
+            type="primary"
+            loading={this.state.loading}
+            onClick={() => this.handleDeleteStartFlow()}
+          >
+            Delete
+          </Button>,
+        ]}
+      >
+        <p>Are you sure you want to delete this timezone record?</p>
+      </Modal>
     );
   }
 
@@ -156,7 +259,7 @@ export class TimezonesPage extends Component {
     return (
       <TimezoneList
         onEditReuqest={this.handleEditStartFlow}
-        onDeleteRequest={this.handleDeleteStartFlow}
+        onDeleteRequest={this.handleDeleteRequest}
         timezones={timezones}
       />
     );
@@ -165,19 +268,11 @@ export class TimezonesPage extends Component {
   renderUserFilter() {
     const { users } = this.props;
     return (
-      <div className="timezone-listing-user-filter">
-        <label htmlFor="user-target">Viewing timezones of user:<br />
-          <Select
-            id="user-target"
-            name="user-target"
-            onChange={this.handleUserTargetIdChanged}
-            value={this.state.userTargetId}
-            style={{ width: 240 }}
-          >
-            {users.map(user => <Option key={user._id} value={user._id}>{user.username}</Option>)}
-          </Select>
-        </label>
-      </div>
+      <TimezoneUserFilter
+        onUserIdChanged={this.handleUserTargetIdChanged}
+        selectedUserId={this.state.userTargetId}
+        users={users}
+      />
     );
   }
 
@@ -191,8 +286,8 @@ export class TimezonesPage extends Component {
     const { currentUser } = this.props;
     return (
       <div className="timezone-filters">
-        {currentUser.role === 2 && this.renderUserFilter()}
         {this.renderFilterByName()}
+        {currentUser.role === 2 && this.renderUserFilter()}
       </div>
     );
   }
@@ -201,11 +296,14 @@ export class TimezonesPage extends Component {
     return (
       <PageContent className="timezone-page">
         <h2>Timezones</h2>
-        <div className="timezone-form-wrapper">
-          {this.renderTimezoneForm()}
-        </div>
+        {this.renderTimezoneFormModal()}
+        {this.renderDeleteConfirmModal()}
         <div className="timezone-filters-wrapper">
           {this.renderTimezoneListFilters()}
+          <Button
+            type="primary"
+            onClick={this.handleTimezoneCreateRequest}
+          >Create</Button>
         </div>
         <div className="timezone-list-wrapper">
           {this.renderTimezoneWrapper()}
