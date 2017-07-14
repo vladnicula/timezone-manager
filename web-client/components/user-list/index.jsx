@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { EditIcon, DeleteIcon } from '../icons';
+import { getDataValueByKey } from '../../utils/dom-props';
 
 if (process.env.BROWSER) {
   require('./index.scss');
@@ -12,13 +13,13 @@ const roles = ['User', 'Manager', 'Admin'];
 const UserListItem = (props) => {
   const { _id, username, role, onEdit, onDelete } = props;
   return (
-    <div className="user-list-item" data-timezone-id={_id}>
+    <div className="user-list-item" data-user-id={_id}>
       <div className="user-list-item-title">{username} - {roles[role]}</div>
       <div className="user-list-item-controls">
         <span
           tabIndex={0}
           role="menuitem"
-          data-timezone-id={_id}
+          data-user-id={_id}
           onClick={onEdit}
         >
           <EditIcon size={18} />
@@ -26,7 +27,7 @@ const UserListItem = (props) => {
         <span
           tabIndex={0}
           role="menuitem"
-          data-timezone-id={_id}
+          data-user-id={_id}
           onClick={onDelete}
         >
           <DeleteIcon size={18} />
@@ -58,14 +59,14 @@ export default class UserList extends Component {
   }
 
   handleEdit(ev) {
-    const targetId = ev.target.dataset.timezoneId;
+    const targetId = getDataValueByKey(ev.target, 'userId');
     if (targetId) {
       this.props.onEditReuqest(targetId);
     }
   }
 
   handleDelete(ev) {
-    const targetId = ev.target.dataset.timezoneId;
+    const targetId = getDataValueByKey(ev.target, 'userId');
     if (targetId) {
       this.props.onDeleteRequest(targetId);
     }

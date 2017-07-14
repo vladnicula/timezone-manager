@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { EditIcon, DeleteIcon } from '../icons';
+import { getDataValueByKey } from '../../utils/dom-props';
 
 if (process.env.BROWSER) {
   require('./index.scss');
@@ -53,14 +54,14 @@ export default class TimezoneList extends Component {
   }
 
   handleEdit(ev) {
-    const targetId = ev.target.dataset.timezoneId;
+    const targetId = getDataValueByKey(ev.target, 'timezoneId');
     if (targetId) {
       this.props.onEditReuqest(targetId);
     }
   }
 
   handleDelete(ev) {
-    const targetId = ev.target.dataset.timezoneId;
+    const targetId = getDataValueByKey(ev.target, 'timezoneId');
     if (targetId) {
       this.props.onDeleteRequest(targetId);
     }
