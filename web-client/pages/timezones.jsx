@@ -75,13 +75,17 @@ export class TimezonesPage extends Component {
   }
 
   async handleTimezoneFormSubmit(newTimezoneData) {
-    const { selectedTimezoneEntity } = this.state;
+    const { selectedTimezoneEntity, userTargetId } = this.state;
     if (selectedTimezoneEntity) {
       await this.props.updateTimezone(
-        selectedTimezoneEntity._id, { ...selectedTimezoneEntity, ...newTimezoneData },
+        selectedTimezoneEntity._id, {
+          ...selectedTimezoneEntity,
+          ...newTimezoneData,
+          userId: userTargetId,
+        },
       );
     } else {
-      await this.props.createTimezone(newTimezoneData);
+      await this.props.createTimezone({ ...newTimezoneData, userId: userTargetId });
     }
 
     await this.refreshTimezoneList();
@@ -192,9 +196,25 @@ TimezonesPage.defaultProps = {
 };
 
 TimezonesPage.propTypes = {
-  currentUser: PropTypes.object,
-  users: PropTypes.arrayOf(PropTypes.object),
-  timezones: PropTypes.arrayOf(PropTypes.object),
+  currentUser: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+  }),
+  users: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
+      role: PropTypes.number.isRequired,
+    }),
+  ),
+  timezones: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      city: PropTypes.string.isRequired,
+      offset: PropTypes.number.isRequired,
+    }),
+  ),
   createTimezone: PropTypes.func.isRequired,
   updateTimezone: PropTypes.func.isRequired,
   deleteTimezone: PropTypes.func.isRequired,
