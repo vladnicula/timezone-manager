@@ -1,0 +1,22 @@
+.timezone-list-item {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+  background-color: #fff;
+  padding: 10px;
+}
+
+.timezone-list-item-title {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+}
+
+.timezone-list-item-controls {
+  display: flex;
+  align-items: center; 
+}
+
+.timezone-list-item-controls [role='menuitem'] {
+  cursor: pointer
+}

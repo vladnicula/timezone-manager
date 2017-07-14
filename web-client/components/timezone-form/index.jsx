@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Input, InputNumber } from 'antd';
 
 export default class TimezoneForm extends Component {
   constructor(props) {
@@ -13,7 +14,7 @@ export default class TimezoneForm extends Component {
 
     this.setName = this.setValueOnChange.bind(this, 'name');
     this.setCity = this.setValueOnChange.bind(this, 'city');
-    this.setOffset = this.setValueOnChange.bind(this, 'offset');
+    this.setOffset = this.setOffset.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
   }
@@ -29,6 +30,10 @@ export default class TimezoneForm extends Component {
     if (providedOffset !== undefined) {
       this.setState({ offset: providedOffset });
     }
+  }
+
+  setOffset(value) {
+    this.setState({ offset: value });
   }
 
   setValueOnChange(key, ev) {
@@ -55,12 +60,15 @@ export default class TimezoneForm extends Component {
     return (
       <div className="timezone-form">
         <div className="field" onKeyUp={this.handleKeyUp}>
-          <input value={name} onChange={this.setName} type="text" name="timezone-name" />
-          <br />
-          <input value={city} onChange={this.setCity} type="text" name="timezone-city" />
-          <br />
-          <input value={offset} onChange={this.setOffset} type="text" name="timezone-offset" />
-          <br />
+          <label htmlFor="timezone-name">
+            <Input value={name} onChange={this.setName} type="text" name="timezone-name" />
+          </label>
+          <label htmlFor="timezone-city">
+            <Input value={city} onChange={this.setCity} type="text" name="timezone-city" />
+          </label>
+          <label htmlFor="timezone-offset">
+            <InputNumber value={offset} min={-13} max={14} step={0.1} onChange={this.setOffset} name="timezone-offset" />
+          </label>
           <button onClick={this.handleSubmit}>Save</button>
         </div>
       </div>
