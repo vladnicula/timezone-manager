@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Input, InputNumber } from 'antd';
 
+if (process.env.BROWSER) {
+  require('./index.scss');
+}
+
 export default class TimezoneForm extends Component {
   constructor(props) {
     super(props);
@@ -42,6 +46,13 @@ export default class TimezoneForm extends Component {
     });
   }
 
+  getFormData() {
+    const { name, city, offset } = this.state;
+    return {
+      name, city, offset,
+    };
+  }
+
   handleSubmit() {
     const { name, city, offset } = this.state;
     const { onSubmit } = this.props;
@@ -54,6 +65,7 @@ export default class TimezoneForm extends Component {
     }
   }
 
+
   render() {
     const { name, city, offset } = this.state;
 
@@ -61,15 +73,17 @@ export default class TimezoneForm extends Component {
       <div className="timezone-form">
         <div className="field" onKeyUp={this.handleKeyUp}>
           <label htmlFor="timezone-name">
+            Timezone Name:
             <Input value={name} onChange={this.setName} type="text" name="timezone-name" />
           </label>
           <label htmlFor="timezone-city">
+            City Name:
             <Input value={city} onChange={this.setCity} type="text" name="timezone-city" />
           </label>
           <label htmlFor="timezone-offset">
+            Offset Value:
             <InputNumber value={offset} min={-13} max={14} step={0.1} onChange={this.setOffset} name="timezone-offset" />
           </label>
-          <button onClick={this.handleSubmit}>Save</button>
         </div>
       </div>
     );

@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+
+import { Button, Select, Input } from 'antd';
+
 import { createTimezone, updateTimezone, fetchTimezones, deleteTimezone } from '../domain/timezones';
 import { fetchUsers } from '../domain/users';
 
@@ -10,6 +13,9 @@ import PageContent from '../components/page-content';
 
 import TimezoneForm from '../components/timezone-form';
 import TimezoneList from '../components/timezone-list';
+import TimezoneNameFilter from '../components/timezone-name-filter';
+
+const Option = Select.Option;
 
 export class TimezonesPage extends Component {
 
@@ -27,18 +33,7 @@ export class TimezonesPage extends Component {
     this.setNameFilter = this.setNameFilter.bind(this);
     this.handleFilterByName = this.handleFilterByName.bind(this);
     this.handleUserTargetIdChanged = this.handleUserTargetIdChanged.bind(this);
-  }
-
-  handleEditStartFlow(id) {
-    this.setState({
-      selectedTimezoneEntity: this.props.timezones.find(timezone => timezone._id === id),
-    });
-  }
-
-  setNameFilter(ev) {
-    this.setState({
-      nameFilter: ev.target.value,
-    });
+    this.setTimezoneFormRef = this.setRef.bind(this, 'timezoneForm');
   }
 
   async handleDeleteStartFlow(id) {
@@ -76,8 +71,28 @@ export class TimezonesPage extends Component {
     });
   }
 
-  async handleTimezoneFormSubmit(newTimezoneData) {
+
+  handleEditStartFlow(id) {
+    this.setState({
+      selectedTimezoneEntity: this.props.timezones.find(timezone => timezone._id === id),
+    });
+  }
+
+  setNameFilter(ev) {
+    this.setState({
+      nameFilter: ev.target.value,
+    });
+  }
+
+  setRef(key, el) {
+    if (el) {
+      this[key] = el;
+    }
+  }
+
+  async handleTimezoneFormSubmit() {
     const { selectedTimezoneEntity, userTargetId } = this.state;
+    const { newTimezoneData } = this.timezoneForm.getFormData();
     if (selectedTimezoneEntity) {
       await this.props.updateTimezone(
         selectedTimezoneEntity._id, {
@@ -97,13 +112,12 @@ export class TimezonesPage extends Component {
     });
   }
 
-  handleFilterByName() {
-    this.refreshTimezoneList();
+  handleFilterByName(nameFilter) {
+    this.setState({ nameFilter }, () => (this.refreshTimezoneList()));
   }
 
-  handleUserTargetIdChanged(event) {
-    const userId = event.target.value;
-    this.setState({ userTargetId: userId }, () => (this.refreshTimezoneList()));
+  handleUserTargetIdChanged(value) {
+    this.setState({ userTargetId: value }, () => (this.refreshTimezoneList()));
   }
 
   async refreshTimezoneList() {
@@ -116,6 +130,7 @@ export class TimezonesPage extends Component {
     const { selectedTimezoneEntity } = this.state;
     const timezoneFormProps = {
       onSubmit: this.handleTimezoneFormSubmit,
+      ref: this.setTimezoneFormRef,
     };
 
     if (selectedTimezoneEntity) {
@@ -128,7 +143,12 @@ export class TimezonesPage extends Component {
       timezoneFormProps.providedOffset = 0;
     }
 
-    return (<TimezoneForm {...timezoneFormProps} />);
+    return (
+      <div>
+        <TimezoneForm {...timezoneFormProps} />
+        <Button onClick={this.handleTimezoneFormSubmit}>Save</Button>
+      </div>
+    );
   }
 
   renderTimezoneWrapper() {
@@ -145,21 +165,25 @@ export class TimezonesPage extends Component {
   renderUserFilter() {
     const { users } = this.props;
     return (
-      <div>
-        <div>Filter by username:</div>
-        <select onChange={this.handleUserTargetIdChanged} value={this.state.userTargetId}>
-          {users.map(user => <option key={user._id} value={user._id}>{user.username}</option>)}
-        </select>
+      <div className="timezone-listing-user-filter">
+        <label htmlFor="user-target">Viewing timezones of user:<br />
+          <Select
+            id="user-target"
+            name="user-target"
+            onChange={this.handleUserTargetIdChanged}
+            value={this.state.userTargetId}
+            style={{ width: 240 }}
+          >
+            {users.map(user => <Option key={user._id} value={user._id}>{user.username}</Option>)}
+          </Select>
+        </label>
       </div>
     );
   }
 
   renderFilterByName() {
     return (
-      <div className="timezone-filters-filter-by-name">
-        <input name="name-filter" value={this.state.nameFilter} onChange={this.setNameFilter} />
-        <button onClick={this.handleFilterByName}>Filter</button>
-      </div>
+      <TimezoneNameFilter onApplyFilter={this.handleFilterByName} />
     );
   }
 
