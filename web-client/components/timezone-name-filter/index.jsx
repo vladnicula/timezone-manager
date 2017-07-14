@@ -16,6 +16,7 @@ class TimezoneNameFilter extends Component {
     this.setNameFilter = this.setNameFilter.bind(this);
     this.handleFilterApply = this.handleFilterApply.bind(this);
     this.handleFilterClear = this.handleFilterClear.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   setNameFilter(ev) {
@@ -32,6 +33,12 @@ class TimezoneNameFilter extends Component {
     });
   }
 
+  handleKeyDown(ev) {
+    if (ev.which === 13) {
+      this.handleFilterApply();
+    }
+  }
+
   render() {
     return (
       <div className="timezone-filter-by-name">
@@ -42,6 +49,7 @@ class TimezoneNameFilter extends Component {
             name="name-filter"
             value={this.state.nameFilter}
             onChange={this.setNameFilter}
+            onKeyDown={this.handleKeyDown}
           />
         </label>
         <Button onClick={this.handleFilterApply}>Filter</Button>
