@@ -20,6 +20,8 @@ import pageTempalte from './template';
 import configureStore from '../domain';
 import { SET_AUTH_TOKEN } from '../domain/auth/actions';
 import { fetchMe } from '../domain/users';
+import asycnRoutehandler from './async-route-handler';
+import errorHandler from './error-handler';
 
 const app = express();
 
@@ -28,8 +30,9 @@ const configWebpack = () => new Promise((resolve, reject) => {
     webpack(webpackConfig, (err, stats) => {
       if (err || stats.hasErrors()) {
         // Handle errors here
-        reject(err || stats.hasErrors);
+        reject(err || stats.toString({ colors: true, reasons: true }));
       }
+
       const assets = Object.keys(stats.compilation.assets);
       const vendorPath = `dist/${assets[1]}`;
       const appPath = `dist/${assets[0]}`;
@@ -48,50 +51,53 @@ app.use(cookieParser());
 
 app.use('/dist', express.static('dist'));
 
-app.get('*', async (req, res) => {
-  const context = {};
-  const { jwt } = req.cookies || {};
-  const store = configureStore();
-  if (jwt) {
-    store.dispatch({
-      type: SET_AUTH_TOKEN,
-      token: jwt,
-    });
+app.get('*', asycnRoutehandler(
+  async (req, res) => {
+    const context = {};
+    const { jwt } = req.cookies || {};
+    const store = configureStore();
+    if (jwt) {
+      store.dispatch({
+        type: SET_AUTH_TOKEN,
+        token: jwt,
+      });
 
-    await store.dispatch(fetchMe(jwt));
-    if (!store.getState().users.currentUser) {
-      res.clearCookie('jwt');
-      res.writeHead(302, req.url);
+      await store.dispatch(fetchMe(jwt));
+      if (!store.getState().users.currentUser) {
+        res.clearCookie('jwt');
+        res.writeHead(302, req.url);
+        return res.end();
+      }
+    }
+
+
+    const html = ReactDOMServer.renderToString(
+      <Provider store={store}>
+        <StaticRouter location={req.url} context={context}>
+          <App />
+        </StaticRouter>
+      </Provider>,
+    );
+
+    // context.url will contain the URL to redirect to if a <Redirect> was used
+    if (context.url) {
+      res.writeHead(302, {
+        Location: context.url,
+      });
       return res.end();
     }
-  }
 
-
-  const html = ReactDOMServer.renderToString(
-    <Provider store={store}>
-      <StaticRouter location={req.url} context={context}>
-        <App />
-      </StaticRouter>
-    </Provider>,
-  );
-
-  // context.url will contain the URL to redirect to if a <Redirect> was used
-  if (context.url) {
-    res.writeHead(302, {
-      Location: context.url,
-    });
-    res.end();
-  } else {
     res.write(pageTempalte({
       serverSideContent: html,
       appBundleUrl: app.get('APP_BUNDLE_PATH'),
       vendorBundleUrl: app.get('VENDOR_BUNDLE_PATH'),
       initialState: store.getState(),
     }));
-    res.end();
-  }
-});
+    return res.end();
+  }),
+);
 
+app.use(errorHandler);
 
 configWebpack()
   .then(({ appPath, vendorPath }) => {
