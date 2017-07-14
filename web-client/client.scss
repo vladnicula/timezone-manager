@@ -17,8 +17,22 @@ body {
   display: flex;
 }
 
+.navigation-menu a {
+  padding: 0 12px;
+  text-decoration: none;
+  color: #fff;
+
+  &.active {
+    background-color: #108ee9;
+  }
+}
+
 .navigation-menu-user-details {
   position: absolute;
   top: 0;
   right: 40px;
+  width: 200px;
+  display: flex;
+  align-items: center;
+  color: #fff;
 }

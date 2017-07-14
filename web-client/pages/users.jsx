@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 
 import { fetchUsers, updateUser, deleteUser, createUser } from '../domain/users';
 
+import PageContent from '../components/page-content';
+
 import UserList from '../components/user-list';
 import UserForm from '../components/user-form';
 
@@ -98,7 +100,7 @@ export class UsersPage extends Component {
 
   render() {
     const { props } = this;
-    return (<div>
+    return (<PageContent>
       <h2>Users</h2>
       <div className="user-form-wrapper">
         {this.renderUserForm()}
@@ -106,7 +108,7 @@ export class UsersPage extends Component {
       <div className="user-list-wrapper">
         {this.renderUserListWrapper()}
       </div>
-    </div>);
+    </PageContent>);
   }
 }
 

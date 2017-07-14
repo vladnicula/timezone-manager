@@ -11,6 +11,9 @@ import App from './App';
 import configureStore from './domain';
 import { SET_AUTH_TOKEN } from './domain/auth/actions';
 
+
+import './client.scss';
+
 const token = Cookies.get('jwt');
 const store = configureStore();
 store.dispatch({

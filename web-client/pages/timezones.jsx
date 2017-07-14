@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import { createTimezone, updateTimezone, fetchTimezones, deleteTimezone } from '../domain/timezones';
 import { fetchUsers } from '../domain/users';
 
+import PageContent from '../components/page-content';
+
 import TimezoneForm from '../components/timezone-form';
 import TimezoneList from '../components/timezone-list';
 
@@ -173,7 +175,7 @@ export class TimezonesPage extends Component {
 
   render() {
     return (
-      <div className="timezone-page">
+      <PageContent className="timezone-page">
         <h2>Timezones</h2>
         <div className="timezone-form-wrapper">
           {this.renderTimezoneForm()}
@@ -184,7 +186,7 @@ export class TimezonesPage extends Component {
         <div className="timezone-list-wrapper">
           {this.renderTimezoneWrapper()}
         </div>
-      </div>
+      </PageContent>
     );
   }
 }

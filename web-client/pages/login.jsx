@@ -5,6 +5,7 @@ import { Button } from 'antd';
 
 import { authenticate, signup } from '../domain/auth';
 
+import PageContent from '../components/page-content';
 import UserAuthForm from '../components/user-auth-form';
 
 export class AuthenticatePage extends Component {
@@ -48,7 +49,7 @@ export class AuthenticatePage extends Component {
 
   render() {
     return (
-      <div>
+      <PageContent>
         <h2>Login / Signup</h2>
         <div>
           <UserAuthForm ref={this.setAuthFormRef} onSubmit={this.handleLogin} />
@@ -61,7 +62,7 @@ export class AuthenticatePage extends Component {
             Signup
           </Button>
         </div>
-      </div>
+      </PageContent>
     );
   }
 }

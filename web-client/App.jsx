@@ -18,10 +18,6 @@ import Login from './pages/login';
 import Timezones from './pages/timezones';
 import Users from './pages/users';
 
-if (process.env.BROWSER) {
-  require('./client.scss');
-}
-
 const { Header, Footer, Content } = Layout;
 
 class App extends Component {
