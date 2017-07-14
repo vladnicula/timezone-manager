@@ -3,21 +3,26 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import {
-  Route, Switch,
+  Route, Switch, IndexRoute,
 } from 'react-router-dom';
 
 import {
   withRouter, Redirect,
 } from 'react-router';
 
+import { Layout } from 'antd';
+
 import NavigationMenu from './NavMenu';
 
-import Layout from './components/layout';
 import Login from './pages/login';
 import Timezones from './pages/timezones';
 import Users from './pages/users';
 
-import './App.scss';
+if (process.env.BROWSER) {
+  require('./client.scss');
+}
+
+const { Header, Footer, Content } = Layout;
 
 class App extends Component {
   constructor(props) {
@@ -35,36 +40,38 @@ class App extends Component {
     if (!token) {
       return (
         <Layout>
-          <Route
-            render={
-              () => {
-                if (match.path !== '/') {
-                  return (<Redirect to="/" />);
-                }
-                return (<Login />);
-              }
-            }
-          />
+          <Content>
+            <Switch>
+              <Route exact path="/login" component={Login} />
+              <Redirect to="/login" />
+            </Switch>
+          </Content>
         </Layout>
       );
     }
 
     return (
       <Layout>
-        <NavigationMenu />
-        <Switch>
-          <Route exact path="/" component={Timezones} />
-          <Route
-            exact
-            path="/users"
-            render={() => {
-              if (currentUser.role) {
-                return <Users />;
-              }
-              return <Redirect to="/" />;
-            }}
-          />
-        </Switch>
+        <Header><NavigationMenu /></Header>
+        <Content>
+          <Switch>
+
+            <Route path="/timezones" component={Timezones} />
+            <Route
+              path="/users"
+              render={() => {
+                if (currentUser.role) {
+                  return <Users />;
+                }
+                return <Redirect to="/" />;
+              }}
+            />
+
+            <Redirect exact from="/" to="/timezones" />
+            <Redirect from="/login" to="/timezones" />
+          </Switch>
+        </Content>
+        <Footer>Footer</Footer>
       </Layout>
     );
   }

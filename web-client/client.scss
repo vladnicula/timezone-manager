@@ -1,0 +1,24 @@
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+}
+
+#react-app {
+  display: flex;
+  height: 100%;
+  overflow: auto;
+}
+
+.navigation-menu {
+  position: relative;
+  display: flex;
+}
+
+.navigation-menu-user-details {
+  position: absolute;
+  top: 0;
+  right: 40px;
+}

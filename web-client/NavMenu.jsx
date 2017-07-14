@@ -4,8 +4,10 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import {
- NavLink,
+ NavLink, withRouter,
 } from 'react-router-dom';
+
+import { Button } from 'antd';
 
 import { logout } from './domain/auth';
 
@@ -26,10 +28,10 @@ export class NavMenu extends Component {
     const { currentUser } = this.props;
     return (
       <div className="navigation-menu">
-        <NavLink to="/">Timezones</NavLink>
+        <NavLink to="/timezones">Timezones</NavLink>
         { (currentUser && currentUser.role !== 0) && <NavLink to="/users">Users</NavLink>}
-        <button onClick={this.handleLogout}>Logout</button>
-        <span>user: {currentUser.username} role: {currentUser.role}</span>
+        <div>user: {currentUser.username} role: {currentUser.role}</div>
+        <Button onClick={this.handleLogout}>Logout</Button>
       </div>
     );
   }
@@ -37,10 +39,16 @@ export class NavMenu extends Component {
 
 NavMenu.propTypes = {
   logout: PropTypes.func.isRequired,
-  currentUser: PropTypes.object.isRequired,
+  currentUser: PropTypes.shape(
+    {
+      _id: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
+      role: PropTypes.number.isRequired,
+    })
+    .isRequired,
 };
 
-export default connect(
+export default withRouter(connect(
   state => ({ currentUser: state.users.currentUser }),
   dispatch => bindActionCreators({ logout }, dispatch),
-)(NavMenu);
+)(NavMenu));

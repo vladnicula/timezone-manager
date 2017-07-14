@@ -1,7 +1,7 @@
 import path from 'path';
 import webpack from 'webpack';
 
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
+// import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import CleanWebpackPlugin from 'clean-webpack-plugin';
 // import HtmlWebpackPlugin from 'html-webpack-plugin';
 
@@ -17,10 +17,10 @@ const HOST_IP = process.env.HOST_IP;
  * only. We should test this when we bundle a production
  * version of the app.
  */
-const extractSass = new ExtractTextPlugin({
-  filename: 'css/[name]-[hash].css',
-    // disable: process.env.NODE_ENV === "development"
-});
+// const extractSass = new ExtractTextPlugin({
+//   filename: 'css/[name]-[hash].css',
+//     // disable: process.env.NODE_ENV === "development"
+// });
 
 const cleanBuildFolter = new CleanWebpackPlugin(['dist'], {
   root: path.resolve('./'),
@@ -57,7 +57,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.js', '.jsx', '.json', '.css', '.scss'],
+    extensions: ['.js', '.json', '.jsx', '.css', '.scss'],
   },
 
   module: {
@@ -86,39 +86,25 @@ module.exports = {
         },
       },
 
-      /**
-       * SCSS bundling, will run all inports from javascript files
-       * that end in scss with loaders that will assure we can either
-       * 1. Append each module as a style tag dynamically (webpack will do this for us)
-       * 2. Generate a css target file - useful in production. See ExtractTextPlugin for this case.
-       */
+      // TODO https://github.com/webpack-contrib/sass-loader read for production
       {
-        test: /\.scss$/,
-        loader: extractSass.extract({
-          loader: [{
+        test: /\.s?css$/,
+        use: [
+          {
+            loader: 'style-loader', // creates style nodes from JS strings
+          },
+          {
             loader: 'css-loader',
-          }, {
-            loader: 'resolve-url-loader',
-          }, {
+            options: {
+              sourceMap: true,
+              localIdentName: '[name]__[local]___[hash:base64:5]',
+            },
+          },
+          {
             loader: 'sass-loader',
             options: {
               sourceMap: true,
             },
-          }],
-              // use style-loader in development
-              // fallbackLoader: "style-loader"
-        }),
-      },
-
-
-      {
-        test: /\.css$/,
-        use: [
-          {
-            loader: 'style-loader',
-          },
-          {
-            loader: 'css-loader',
           },
         ],
       },
@@ -146,22 +132,18 @@ module.exports = {
     ],
   },
 
-  // resolve: {
-  //   modules: [
-  //     'node_modules',
-  //     clientPath
-  //   ],
-
-  //   extensions: ['.js', '.json', '.jsx', '.css', '.scss'],
-  // },
-
   devtool: 'source-map',
   stats: 'minimal',
 
   plugins: [
     vendorExtractionPlugin,
-    extractSass,
+    // extractSass,
     cleanBuildFolter,
     // developmentIndexHtmlFile,
+    new webpack.DefinePlugin({
+      'process.env': {
+        BROWSER: JSON.stringify(true),
+      },
+    }),
   ],
 };

@@ -3,17 +3,5 @@
   "plugins": [
     "transform-object-rest-spread", 
     "transform-async-to-generator"
-  ],
-  "env": {
-    "node": {
-      "plugins": [
-        [
-          "babel-plugin-transform-require-ignore",
-          {
-            "extensions": [".css", ".scss"]
-          }
-        ]
-      ]
-    }
-  }
+  ]
 }

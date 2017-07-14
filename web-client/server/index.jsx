@@ -27,7 +27,8 @@ const app = express();
 
 const configWebpack = () => new Promise((resolve, reject) => {
   if (process.env.NODE_ENV === 'development') {
-    webpack(webpackConfig, (err, stats) => {
+    const compiler = webpack(webpackConfig);
+    compiler.run((err, stats) => {
       if (err || stats.hasErrors()) {
         // Handle errors here
         reject(err || stats.toString({ colors: true, reasons: true }));
@@ -37,7 +38,7 @@ const configWebpack = () => new Promise((resolve, reject) => {
       const vendorPath = `dist/${assets[1]}`;
       const appPath = `dist/${assets[0]}`;
 
-        // console.log({ appPath, vendorPath });
+      console.log(stats.toString({ colors: true, reasons: true }));
 
       resolve({
         appPath,

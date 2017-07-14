@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Button } from 'antd';
-import 'antd/lib/button/style/index.css';
 
 import { authenticate, signup } from '../domain/auth';
 

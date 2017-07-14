@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Input, Button, Select } from 'antd';
+
+const Option = Select.Option;
 
 export default class UserForm extends Component {
   constructor(props) {
@@ -13,7 +16,7 @@ export default class UserForm extends Component {
 
     this.setUserName = this.setValueOnChange.bind(this, 'username');
     this.setPassword = this.setValueOnChange.bind(this, 'password');
-    this.setRole = this.setValueOnChange.bind(this, 'role');
+    this.setRole = this.setSelectRole.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
   }
@@ -29,6 +32,12 @@ export default class UserForm extends Component {
     if (providedRole !== undefined) {
       this.setState({ role: providedRole });
     }
+  }
+
+  setSelectRole(value) {
+    this.setState({
+      role: parseInt(value, 10),
+    });
   }
 
   setValueOnChange(key, ev) {
@@ -55,13 +64,19 @@ export default class UserForm extends Component {
     return (
       <div className="user-form">
         <div className="field" onKeyUp={this.handleKeyUp}>
-          <input value={username} onChange={this.setUserName} type="text" name="timezone-name" />
-          <br />
-          <input value={password} onChange={this.setPassword} type="password" name="timezone-city" />
-          <br />
-          <input value={role} onChange={this.setRole} type="text" name="timezone-offset" />
-          <br />
-          <button onClick={this.handleSubmit}>Save</button>
+          <Input value={username} onChange={this.setUserName} type="text" name="username" />
+          <Input value={password} onChange={this.setPassword} type="password" name="password" />
+          <Select
+            name="user-role"
+            defaultValue={role.toString()}
+            style={{ width: 120 }}
+            onChange={this.setRole}
+          >
+            <Option value={'0'}>User</Option>
+            <Option value={'1'}>Manager</Option>
+            <Option value={'2'}>Admin</Option>
+          </Select>
+          <Button onClick={this.handleSubmit}>Save</Button>
         </div>
       </div>
     );
