@@ -10,7 +10,7 @@ import {
   withRouter, Redirect,
 } from 'react-router';
 
-import NavMenu from './NavMenu';
+import NavigationMenu from './NavMenu';
 
 import Layout from './components/layout';
 import Login from './pages/login';
@@ -50,7 +50,7 @@ class App extends Component {
 
     return (
       <Layout>
-        <NavMenu />
+        <NavigationMenu />
         <Switch>
           <Route exact path="/" component={Timezones} />
           <Route
@@ -77,8 +77,13 @@ App.defaultProps = {
 
 App.propTypes = {
   token: PropTypes.string,
-  currentUser: PropTypes.object,
-  match: PropTypes.object,
+  currentUser: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+  }),
+  match: PropTypes.shape({
+    path: PropTypes.string.isRequired,
+  }),
 };
 
 export default withRouter(connect(state => ({
