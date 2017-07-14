@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Button } from 'antd';
+import 'antd/lib/button/style/index.css';
+
 import { authenticate, signup } from '../domain/auth';
+
+import UserAuthForm from '../components/user-auth-form';
 
 export class AuthenticatePage extends Component {
 
@@ -9,21 +14,17 @@ export class AuthenticatePage extends Component {
     super(props);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignUp = this.handleSignUp.bind(this);
-    this.setUsername = this.setInputValue.bind(this, 'username');
-    this.setPassword = this.setInputValue.bind(this, 'password');
-    this.state = {
-      username: '', password: '',
-    };
+    this.setAuthFormRef = this.setRef.bind(this, 'authForm');
   }
 
-  setInputValue(key, ev) {
-    this.setState({
-      [key]: ev.target.value,
-    });
+  setRef(key, el) {
+    if (el) {
+      this[key] = el;
+    }
   }
 
   async handleLogin() {
-    const { username, password } = this.state;
+    const { username, password } = this.authForm.getFormData();
     try {
       const response = await this.props.authenticate({
         username, password,
@@ -35,7 +36,7 @@ export class AuthenticatePage extends Component {
   }
 
   async handleSignUp() {
-    const { username, password } = this.state;
+    const { username, password } = this.authForm.getFormData();
     try {
       const response = await this.props.signup({
         username, password,
@@ -51,22 +52,15 @@ export class AuthenticatePage extends Component {
       <div>
         <h2>Login / Signup</h2>
         <div>
-          <label htmlFor="name">
-            Name:
-            <input onChange={this.setUsername} type="name" id="name" />
-          </label><br />
-          <label htmlFor="password">
-            Password:
-            <input onChange={this.setPassword} type="password" id="password" />
-          </label><br />
+          <UserAuthForm ref={this.setAuthFormRef} onSubmit={this.handleLogin} />
 
-          <button onClick={this.handleLogin}>
+          <Button onClick={this.handleLogin}>
             Login
-          </button>
+          </Button>
 
-          <button onClick={this.handleSignUp}>
+          <Button onClick={this.handleSignUp}>
             Signup
-          </button>
+          </Button>
         </div>
       </div>
     );

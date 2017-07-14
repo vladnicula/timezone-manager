@@ -17,6 +17,7 @@ import Login from './pages/login';
 import Timezones from './pages/timezones';
 import Users from './pages/users';
 
+import './App.scss';
 
 class App extends Component {
   constructor(props) {
@@ -71,7 +72,11 @@ class App extends Component {
 
 App.defaultProps = {
   token: '',
-  currentUser: {},
+  currentUser: {
+    _id: '',
+    username: '',
+    role: 0,
+  },
   match: {},
 };
 
@@ -80,6 +85,7 @@ App.propTypes = {
   currentUser: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
+    role: PropTypes.number.isRequired,
   }),
   match: PropTypes.shape({
     path: PropTypes.string.isRequired,

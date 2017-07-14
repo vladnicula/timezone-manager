@@ -21,7 +21,8 @@ export default function (err, req, res, next) {
   if (err.name === 'ValidationError') {
     return res.status(403).json({
       status: 'error',
-      message: err.errors,
+      message: 'Validation Error',
+      errors: err.errors,
     });
   }
 

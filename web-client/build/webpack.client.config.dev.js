@@ -57,7 +57,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.js', '.jsx', '.json'],
+    extensions: ['.js', '.jsx', '.json', '.css', '.scss'],
   },
 
   module: {
@@ -78,7 +78,11 @@ module.exports = {
             ['stage-0'],
             ['react'],
           ],
-          plugins: ['transform-object-rest-spread', 'transform-async-to-generator'],
+          plugins: [
+            'transform-object-rest-spread',
+            'transform-async-to-generator',
+            ['import', { libraryName: 'antd', style: 'css' }],
+          ],
         },
       },
 
@@ -109,15 +113,14 @@ module.exports = {
 
       {
         test: /\.css$/,
-        loader: extractSass.extract({
-          loader: [{
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
             loader: 'css-loader',
-          }, {
-            loader: 'resolve-url-loader',
-          }],
-              // use style-loader in development
-              // fallbackLoader: "style-loader"
-        }),
+          },
+        ],
       },
 
 
