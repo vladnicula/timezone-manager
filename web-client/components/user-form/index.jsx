@@ -4,6 +4,10 @@ import { Input, Button, Select } from 'antd';
 
 const Option = Select.Option;
 
+if (process.env.BROWSER) {
+  require('./index.scss');
+}
+
 export default class UserForm extends Component {
   constructor(props) {
     super(props);
@@ -64,19 +68,39 @@ export default class UserForm extends Component {
     return (
       <div className="user-form">
         <div className="field" onKeyUp={this.handleKeyUp}>
-          <Input value={username} onChange={this.setUserName} type="text" name="username" />
-          <Input value={password} onChange={this.setPassword} type="password" name="password" />
-          <Select
-            name="user-role"
-            defaultValue={role.toString()}
-            style={{ width: 120 }}
-            onChange={this.setRole}
-          >
-            <Option value={'0'}>User</Option>
-            <Option value={'1'}>Manager</Option>
-            <Option value={'2'}>Admin</Option>
-          </Select>
-          <Button onClick={this.handleSubmit}>Save</Button>
+          <label htmlFor="username">
+            Username:
+            <Input
+              placeholder="username"
+              value={username}
+              onChange={this.setUserName}
+              type="text"
+              name="username"
+            />
+          </label>
+          <label htmlFor="password">
+            Password:
+            <Input
+              placeholder="password"
+              value={password}
+              onChange={this.setPassword}
+              type="password"
+              name="password"
+            />
+          </label>
+          <div className="user-form-role-control">
+            <Select
+              name="user-role"
+              defaultValue={role.toString()}
+              style={{ flex: 1 }}
+              onChange={this.setRole}
+            >
+              <Option value={'0'}>User</Option>
+              <Option value={'1'}>Manager</Option>
+              <Option value={'2'}>Admin</Option>
+            </Select>
+            <Button onClick={this.handleSubmit}>Save</Button>
+          </div>
         </div>
       </div>
     );

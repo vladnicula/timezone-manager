@@ -1,0 +1,22 @@
+.user-list-item {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+  background-color: #fff;
+  padding: 10px;
+}
+
+.user-list-item-title {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+}
+
+.user-list-item-controls {
+  display: flex;
+  align-items: center; 
+}
+
+.user-list-item-controls [role='menuitem'] {
+  cursor: pointer
+}
