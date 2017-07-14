@@ -92,7 +92,7 @@ export class TimezonesPage extends Component {
 
   async handleTimezoneFormSubmit() {
     const { selectedTimezoneEntity, userTargetId } = this.state;
-    const { newTimezoneData } = this.timezoneForm.getFormData();
+    const newTimezoneData = this.timezoneForm.getFormData();
     if (selectedTimezoneEntity) {
       await this.props.updateTimezone(
         selectedTimezoneEntity._id, {
