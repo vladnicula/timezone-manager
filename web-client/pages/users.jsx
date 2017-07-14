@@ -23,12 +23,16 @@ export class UsersPage extends Component {
     this.handleDeleteStartFlow = this.handleDeleteStartFlow.bind(this);
   }
 
+  componentDidMount() {
+    this.props.fetchUsers();
+  }
+
   handleUserFormSubmit(newUserData) {
     const { selectedUserEntity } = this.state;
     if (selectedUserEntity) {
       this.props.updateUser(
-        selectedUserEntity._id, { ...selectedUserEntity, ...newUserData },
-      );
+      selectedUserEntity._id, { ...selectedUserEntity, ...newUserData },
+    );
     } else {
       this.props.createUser(newUserData);
     }
@@ -46,25 +50,6 @@ export class UsersPage extends Component {
 
   handleDeleteStartFlow(id) {
     this.props.deleteUser(id);
-  }
-
-  componentDidMount() {
-    this.props.fetchUsers();
-  }
-
-  handleUserFormSubmit(newUserData) {
-    const { selectedUserEntity } = this.state;
-    if (selectedUserEntity) {
-      this.props.updateUser(
-        selectedUserEntity._id, { ...selectedUserEntity, ...newUserData },
-      );
-    } else {
-      this.props.createUser(newUserData);
-    }
-
-    this.setState({
-      selectedUserEntity: null,
-    });
   }
 
   renderUserForm() {
@@ -99,7 +84,6 @@ export class UsersPage extends Component {
   }
 
   render() {
-    const { props } = this;
     return (<PageContent>
       <h2>Users</h2>
       <div className="user-form-wrapper">

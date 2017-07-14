@@ -52,8 +52,7 @@ export default class UserForm extends Component {
 
   handleSubmit() {
     const { username, password, role } = this.state;
-    const { onSubmit } = this.props;
-    onSubmit({ username, password, role });
+    this.props.onSubmit({ username, password, role });
   }
 
   handleKeyUp(ev) {
