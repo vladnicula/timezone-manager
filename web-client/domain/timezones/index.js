@@ -6,6 +6,7 @@ import {
   TIMEZONE_OPERATION_START,
   TIMEZONE_OPERATION_SUCCESS,
   TIMEZONE_OPERATION_ERROR,
+  CLEAR_TIMEZONE_ERROR,
 } from './actions';
 
 
@@ -34,15 +35,34 @@ const fetchTimezones = (authToken, { userId, nameFilter }) => async (dispatch) =
     extras = `?${extras}`;
   }
 
-  const response = await axios.get(
-    `http://localhost:3185/api/v1/timezone${extras}`,
-    authOptions,
-  );
+  try {
+    const response = await axios.get(
+      `http://localhost:3185/api/v1/timezone${extras}`,
+      authOptions,
+    );
 
-  dispatch({
-    type: SET_TIMEZONES,
-    timezones: response.data.timezones,
-  });
+    dispatch({
+      type: SET_TIMEZONES,
+      timezones: response.data.timezones,
+    });
+  } catch (err) {
+    if (err.response && err.response.data.message) {
+      dispatch({
+        type: TIMEZONE_OPERATION_ERROR,
+        error: err.response.data.message,
+      });
+    } else if (err.message === 'Network Error') {
+      dispatch({
+        type: TIMEZONE_OPERATION_ERROR,
+        error: 'API Server not reachable',
+      });
+    } else {
+      dispatch({
+        type: TIMEZONE_OPERATION_ERROR,
+        error: err.toString(),
+      });
+    }
+  }
 };
 
 export { fetchTimezones };
@@ -75,10 +95,22 @@ const createTimezone = timezoneData => async (dispatch) => {
       type: TIMEZONE_OPERATION_SUCCESS,
     });
   } catch (err) {
-    dispatch({
-      type: TIMEZONE_OPERATION_ERROR,
-      error: err,
-    });
+    if (err.response && err.response.data.message) {
+      dispatch({
+        type: TIMEZONE_OPERATION_ERROR,
+        error: err.response.data.message,
+      });
+    } else if (err.message === 'Network Error') {
+      dispatch({
+        type: TIMEZONE_OPERATION_ERROR,
+        error: 'API Server not reachable',
+      });
+    } else {
+      dispatch({
+        type: TIMEZONE_OPERATION_ERROR,
+        error: err.toString(),
+      });
+    }
   }
 };
 
@@ -110,10 +142,22 @@ const deleteTimezone = timezoneId => async (dispatch) => {
       type: TIMEZONE_OPERATION_SUCCESS,
     });
   } catch (err) {
-    dispatch({
-      type: TIMEZONE_OPERATION_ERROR,
-      error: err,
-    });
+    if (err.response && err.response.data.message) {
+      dispatch({
+        type: TIMEZONE_OPERATION_ERROR,
+        error: err.response.data.message,
+      });
+    } else if (err.message === 'Network Error') {
+      dispatch({
+        type: TIMEZONE_OPERATION_ERROR,
+        error: 'API Server not reachable',
+      });
+    } else {
+      dispatch({
+        type: TIMEZONE_OPERATION_ERROR,
+        error: err.toString(),
+      });
+    }
   }
 };
 
@@ -146,32 +190,50 @@ const updateTimezone = (timezoneId, patchPayload) => async (dispatch) => {
       type: TIMEZONE_OPERATION_SUCCESS,
     });
   } catch (err) {
-    dispatch({
-      type: TIMEZONE_OPERATION_ERROR,
-      error: err,
-    });
+    if (err.response && err.response.data.message) {
+      dispatch({
+        type: TIMEZONE_OPERATION_ERROR,
+        error: err.response.data.message,
+      });
+    } else if (err.message === 'Network Error') {
+      dispatch({
+        type: TIMEZONE_OPERATION_ERROR,
+        error: 'API Server not reachable',
+      });
+    } else {
+      dispatch({
+        type: TIMEZONE_OPERATION_ERROR,
+        error: err.toString(),
+      });
+    }
   }
 };
 
 export { updateTimezone };
 
+const clearTimezoneError = () => ({
+  type: CLEAR_TIMEZONE_ERROR,
+});
+
+export { clearTimezoneError };
+
 const reducer = (state = {}, action = {}) => {
   switch (action.type) {
     case SET_TIMEZONES:
       return { ...state,
+        working: false,
         timezones: action.timezones,
       };
     case TIMEZONE_OPERATION_START:
       return {
         ...state,
         working: true,
-        error: false,
       };
     case TIMEZONE_OPERATION_SUCCESS:
       return {
         ...state,
         working: false,
-        error: false,
+        error: null,
       };
     case TIMEZONE_OPERATION_ERROR:
       return {

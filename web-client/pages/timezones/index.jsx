@@ -3,10 +3,15 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import { Button, Modal, Alert } from 'antd';
 
-import { Button, Modal } from 'antd';
-
-import { createTimezone, updateTimezone, fetchTimezones, deleteTimezone } from '../../domain/timezones';
+import {
+  createTimezone,
+  updateTimezone,
+  fetchTimezones,
+  deleteTimezone,
+  clearTimezoneError,
+} from '../../domain/timezones';
 import { fetchUsers } from '../../domain/users';
 
 import PageContent from '../../components/page-content';
@@ -91,13 +96,21 @@ export class TimezonesPage extends Component {
       console.error('delete action failed', err);
     }
 
+    const { error } = this.props;
+
+    if (error) {
+      return this.setState({
+        loading: false,
+      });
+    }
+
     try {
       await this.refreshTimezoneList();
     } catch (err) {
       console.error('timezone list refresh after delete action failed', err);
     }
 
-    this.setState({
+    return this.setState({
       deleteModalVisible: false,
       loading: false,
       timezoneToDeleteById: false,
@@ -124,10 +137,12 @@ export class TimezonesPage extends Component {
   }
 
   handleTimezoneModalCancel() {
+    this.props.clearTimezoneError();
     this.setState({ modalVisible: false });
   }
 
   handleTimezoneDeleteModalCancel() {
+    this.props.clearTimezoneError();
     this.setState({ deleteModalVisible: false });
   }
 
@@ -151,17 +166,24 @@ export class TimezonesPage extends Component {
       await this.props.createTimezone({ ...newTimezoneData, userId: userTargetId });
     }
 
-    await this.refreshTimezoneList();
+    const { error } = this.props;
+    if (error) {
+      this.setState({
+        loading: false,
+      });
+    } else {
+      await this.refreshTimezoneList();
 
-    this.setState({
-      loading: false,
-    }, () => (
-        this.setState({
-          selectedTimezoneEntity: null,
-          modalVisible: false,
-        })
-      ),
-    );
+      this.setState({
+        loading: false,
+      }, () => (
+          this.setState({
+            selectedTimezoneEntity: null,
+            modalVisible: false,
+          })
+        ),
+      );
+    }
   }
 
   handleTimezoneCreateRequest() {
@@ -222,6 +244,7 @@ export class TimezonesPage extends Component {
           </Button>,
         ]}
       >
+        { this.props.error && <Alert message={this.props.error} type="error" /> }
         <TimezoneForm {...timezoneFormProps} />
       </Modal>
     );
@@ -252,6 +275,7 @@ export class TimezonesPage extends Component {
           </Button>,
         ]}
       >
+        { this.props.error && <Alert message={this.props.error} type="error" /> }
         <p>Are you sure you want to delete this timezone record?</p>
       </Modal>
     );
@@ -320,6 +344,7 @@ TimezonesPage.defaultProps = {
   timezones: [],
   currentUser: {},
   users: [],
+  error: '',
 };
 
 TimezonesPage.propTypes = {
@@ -347,10 +372,14 @@ TimezonesPage.propTypes = {
   deleteTimezone: PropTypes.func.isRequired,
   fetchTimezones: PropTypes.func.isRequired,
   fetchUsers: PropTypes.func.isRequired,
+  clearTimezoneError: PropTypes.func.isRequired,
+  error: PropTypes.string,
 };
 
 export default connect(
   state => ({
+    error: state.timezones.error,
+    // loading: state.timezones.working,
     timezones: state.timezones.timezones,
     currentUser: state.users.currentUser,
     users: state.users.users,
@@ -361,5 +390,6 @@ export default connect(
     deleteTimezone,
     fetchTimezones,
     fetchUsers,
+    clearTimezoneError,
   }, dispatch),
 )(TimezonesPage);

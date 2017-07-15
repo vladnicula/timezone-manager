@@ -9,3 +9,6 @@ export { TIMEZONE_OPERATION_SUCCESS };
 
 const TIMEZONE_OPERATION_ERROR = 'tzm-timezone-operation-error';
 export { TIMEZONE_OPERATION_ERROR };
+
+const CLEAR_TIMEZONE_ERROR = 'tmz-timezone-clear-errors';
+export { CLEAR_TIMEZONE_ERROR };
