@@ -74,7 +74,12 @@ export default class UserList extends Component {
 
   renderUser(user) {
     return (
-      <UserListItem key={user._id} {...user} onEdit={this.handleEdit} onDelete={this.handleDelete} />
+      <UserListItem
+        key={user._id}
+        {...user}
+        onEdit={this.handleEdit}
+        onDelete={this.handleDelete}
+      />
     );
   }
 
@@ -89,7 +94,7 @@ export default class UserList extends Component {
   }
 }
 
-UserList.PropTypes = {
+UserList.propTypes = {
   users: PropTypes.arrayOf(PropTypes.object).isRequired,
   onEditReuqest: PropTypes.func.isRequired,
   onDeleteRequest: PropTypes.func.isRequired,

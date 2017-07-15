@@ -85,7 +85,7 @@ export default class TimezoneList extends Component {
     });
   }
 
-  componentWillUnMount() {
+  componentWillUnmount() {
     clearTimeout(this.updateTo);
   }
 
