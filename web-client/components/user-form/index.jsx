@@ -20,7 +20,7 @@ export default class UserForm extends Component {
 
     this.setUserName = this.setValueOnChange.bind(this, 'username');
     this.setPassword = this.setValueOnChange.bind(this, 'password');
-    this.setRole = this.setSelectRole.bind(this);
+    this.setRole = this.setRole.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
   }
@@ -38,7 +38,7 @@ export default class UserForm extends Component {
     }
   }
 
-  setSelectRole(value) {
+  setRole(value) {
     this.setState({
       role: parseInt(value, 10),
     });
@@ -48,6 +48,13 @@ export default class UserForm extends Component {
     this.setState({
       [key]: ev.target.value,
     });
+  }
+
+  getFormData() {
+    const { username, password, role } = this.state;
+    return {
+      username, password, role,
+    };
   }
 
   handleSubmit() {
@@ -63,43 +70,42 @@ export default class UserForm extends Component {
 
   render() {
     const { role, username, password } = this.state;
-
     return (
       <div className="user-form">
-        <div className="field" onKeyUp={this.handleKeyUp}>
-          <label htmlFor="username">
-            Username:
-            <Input
-              placeholder="username"
-              value={username}
-              onChange={this.setUserName}
-              type="text"
-              name="username"
-            />
-          </label>
-          <label htmlFor="password">
-            Password:
-            <Input
-              placeholder="password"
-              value={password}
-              onChange={this.setPassword}
-              type="password"
-              name="password"
-            />
-          </label>
-          <div className="user-form-role-control">
-            <Select
-              name="user-role"
-              defaultValue={role.toString()}
-              style={{ flex: 1 }}
-              onChange={this.setRole}
-            >
-              <Option value={'0'}>User</Option>
-              <Option value={'1'}>Manager</Option>
-              <Option value={'2'}>Admin</Option>
-            </Select>
-            <Button onClick={this.handleSubmit}>Save</Button>
-          </div>
+        <label htmlFor="username">
+          Username:
+          <Input
+            onKeyUp={this.handleKeyUp}
+            placeholder="username"
+            value={username}
+            onChange={this.setUserName}
+            type="text"
+            name="username"
+          />
+        </label>
+        <label htmlFor="password">
+          Password:
+          <Input
+            onKeyUp={this.handleKeyUp}
+            placeholder="password"
+            value={password}
+            onChange={this.setPassword}
+            type="password"
+            name="password"
+          />
+        </label>
+        <div className="user-form-role-control">
+          <Select
+            name="user-role"
+            value={role.toString()}
+            style={{ flex: 1 }}
+            onChange={this.setRole}
+          >
+            <Option value={'0'}>User</Option>
+            <Option value={'1'}>Manager</Option>
+            <Option value={'2'}>Admin</Option>
+          </Select>
+
         </div>
       </div>
     );

@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 
-import { Button, Select, Modal } from 'antd';
+import { Button, Modal } from 'antd';
 
 import { createTimezone, updateTimezone, fetchTimezones, deleteTimezone } from '../../domain/timezones';
 import { fetchUsers } from '../../domain/users';
@@ -19,8 +19,6 @@ import TimezoneUserFilter from '../../components/timezone-user-filter';
 if (process.env.BROWSER) {
   require('./index.scss');
 }
-
-const Option = Select.Option;
 
 export class TimezonesPage extends Component {
 
@@ -213,7 +211,7 @@ export class TimezonesPage extends Component {
         onOk={this.handleTimezoneModalConfirm}
         onCancel={this.handleTimezoneModalCancel}
         footer={[
-          <Button onClick={this.handleTimezoneModalCancel}>Cancel</Button>,
+          <Button key="cancel" onClick={this.handleTimezoneModalCancel}>Cancel</Button>,
           <Button
             key="submit"
             type="primary"
@@ -238,7 +236,12 @@ export class TimezonesPage extends Component {
         onOk={() => this.handleDeleteStartFlow()}
         onCancel={this.handleTimezoneDeleteModalCancel}
         footer={[
-          <Button onClick={this.handleTimezoneDeleteModalCancel}>Cancel</Button>,
+          <Button
+            key="cancel"
+            onClick={this.handleTimezoneDeleteModalCancel}
+          >
+            Cancel
+          </Button>,
           <Button
             key="submit"
             type="primary"
@@ -303,7 +306,7 @@ export class TimezonesPage extends Component {
           <Button
             type="primary"
             onClick={this.handleTimezoneCreateRequest}
-          >Create</Button>
+          >Create new timezone</Button>
         </div>
         <div className="timezone-list-wrapper">
           {this.renderTimezoneWrapper()}
