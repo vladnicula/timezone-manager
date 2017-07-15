@@ -7,9 +7,11 @@ import {
  NavLink, withRouter,
 } from 'react-router-dom';
 
-import { Button } from 'antd';
-
 import { logout } from './domain/auth';
+
+
+import { Button } from 'antd';
+import { CloseIcon } from './components/icons';
 
 export class NavMenu extends Component {
   constructor(props) {
@@ -31,11 +33,12 @@ export class NavMenu extends Component {
         <NavLink to="/timezones">Timezones</NavLink>
         { (currentUser && currentUser.role !== 0) && <NavLink to="/users">Users</NavLink>}
         <div className="navigation-menu-user-details">
-          <div className="navigation-menu-user-info">
-            <span>{currentUser.username}</span><br />
-            <span>role: {currentUser.role}</span>
-          </div>
-          <Button onClick={this.handleLogout}>Logout</Button>
+          <Button
+            className={'navigation-menu-logout-btn'}
+            onClick={this.handleLogout}
+          >
+            <CloseIcon /> Log out
+          </Button>
         </div>
       </div>
     );

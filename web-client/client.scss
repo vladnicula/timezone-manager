@@ -15,6 +15,11 @@ body {
 .navigation-menu {
   position: relative;
   display: flex;
+  .navigation-menu-logout-btn {
+    display: flex;
+    align-items: center;
+    padding: 0px 8px 0 2px;
+  }
 }
 
 .navigation-menu a {
@@ -30,17 +35,18 @@ body {
 .navigation-menu-user-details {
   position: absolute;
   top: 0;
-  right: 40px;
-  width: 200px;
+  right: 0;
+  width: 99px;
   display: flex;
   align-items: center;
   color: #fff;
   height: 100%;
+  justify-content: flex-end;
+}
 
-  .navigation-menu-user-info {
-    flex: 1;
-    line-height: 15px;
-    padding-right: 13px;
-    text-align: right;
-  }
+.footer-menu-user-info {
+  flex: 1;
+  line-height: 15px;
+  padding-right: 13px;
+  text-align: right;
 }

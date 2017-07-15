@@ -18,6 +18,8 @@ import Login from './pages/login';
 import Timezones from './pages/timezones';
 import Users from './pages/users';
 
+const roles = ['User', 'Manager', 'Admin'];
+
 const { Header, Footer, Content } = Layout;
 
 class App extends Component {
@@ -67,7 +69,12 @@ class App extends Component {
             <Redirect from="/login" to="/timezones" />
           </Switch>
         </Content>
-        <Footer>Footer</Footer>
+        <Footer>
+          <div className="footer-menu-user-info">
+            <span>Logged in as <strong>{currentUser.username}</strong></span><br />
+            <span>Current role: <strong>{roles[currentUser.role]}</strong></span>
+          </div>
+        </Footer>
       </Layout>
     );
   }
