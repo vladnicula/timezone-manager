@@ -126,8 +126,6 @@ const createUser = userData => async (dispatch) => {
       authOptions,
     );
 
-    await fetchUsers()(dispatch);
-
     dispatch({
       type: USERS_OPERATION_SUCCESS,
     });
@@ -174,8 +172,6 @@ const deleteUser = userId => async (dispatch) => {
       `http://localhost:3185/api/v1/user/${userId}`,
       authOptions,
     );
-
-    await fetchUsers()(dispatch);
 
     dispatch({
       type: USERS_OPERATION_SUCCESS,
@@ -224,8 +220,6 @@ const updateUser = (userId, patchPayload) => async (dispatch) => {
       patchPayload,
       authOptions,
     );
-
-    await fetchUsers()(dispatch);
 
     dispatch({
       type: USERS_OPERATION_SUCCESS,

@@ -27,13 +27,13 @@ export default class UserForm extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { providedUserName, providedPassword, providedRole } = nextProps;
-    if (providedUserName !== undefined) {
+    if (providedUserName !== undefined && providedUserName !== this.props.providedUserName) {
       this.setState({ username: providedUserName });
     }
-    if (providedPassword !== undefined) {
+    if (providedPassword !== undefined && providedPassword !== this.props.providedPassword) {
       this.setState({ password: providedPassword });
     }
-    if (providedRole !== undefined) {
+    if (providedRole !== undefined && providedRole !== this.props.providedRole) {
       this.setState({ role: providedRole });
     }
   }

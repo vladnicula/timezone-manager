@@ -25,13 +25,13 @@ export default class TimezoneForm extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { providedName, providedCity, providedOffset } = nextProps;
-    if (providedName !== undefined) {
+    if (providedName !== undefined && providedName !== this.props.providedName) {
       this.setState({ name: providedName });
     }
-    if (providedCity !== undefined) {
+    if (providedCity !== undefined && providedCity !== this.props.providedCity) {
       this.setState({ city: providedCity });
     }
-    if (providedOffset !== undefined) {
+    if (providedOffset !== undefined && providedOffset !== this.props.providedOffset) {
       this.setState({ offset: providedOffset });
     }
   }

@@ -41,7 +41,7 @@ export class UsersPage extends Component {
     this.handleDeleteStartFlow = this.handleDeleteStartFlow.bind(this);
 
     this.handleCreateFlowStart = this.handleCreateFlowStart.bind(this);
-    this.handleUserDdataModalCancel = this.handleUserDdataModalCancel.bind(this);
+    this.handleUserDataModalCancel = this.handleUserDataModalCancel.bind(this);
     this.handleUserDeleteModalCancel = this.handleUserDeleteModalCancel.bind(this);
   }
 
@@ -61,13 +61,14 @@ export class UsersPage extends Component {
     });
   }
 
-  handleUserDdataModalCancel() {
+  handleUserDataModalCancel() {
     this.setState({
       userDataModalVisible: false,
+      selectedUserEntity: null,
     });
   }
 
-  handleUserFormSubmit() {
+  async handleUserFormSubmit() {
     const { selectedUserEntity } = this.state;
     const newUserData = this.userForm.getFormData();
 
@@ -76,11 +77,11 @@ export class UsersPage extends Component {
     });
 
     if (selectedUserEntity) {
-      this.props.updateUser(
-      selectedUserEntity._id, { ...selectedUserEntity, ...newUserData },
-    );
+      await this.props.updateUser(
+        selectedUserEntity._id, { ...selectedUserEntity, ...newUserData },
+      );
     } else {
-      this.props.createUser(newUserData);
+      await this.props.createUser(newUserData);
     }
 
     const { error } = this.props;
@@ -90,6 +91,8 @@ export class UsersPage extends Component {
         loading: false,
       });
     }
+
+    await this.props.fetchUsers();
 
     return this.setState({
       loading: false,
@@ -124,6 +127,9 @@ export class UsersPage extends Component {
     if (error) {
       return this.setState({ loading: false });
     }
+
+    await this.props.fetchUsers();
+
     return this.setState({ loading: false, userToDeleteById: null, deleteModalVisible: false });
   }
 
@@ -138,6 +144,7 @@ export class UsersPage extends Component {
     this.props.clearUsersError();
     this.setState({
       deleteModalVisible: false,
+      userToDeleteById: null,
     });
   }
 
@@ -197,11 +204,11 @@ export class UsersPage extends Component {
         visible={userDataModalVisible}
         title={modalTitle}
         onOk={this.handleUserFormSubmit}
-        onCancel={this.handleUserDdataModalCancel}
+        onCancel={this.handleUserDataModalCancel}
         footer={[
           <Button
             key="cancel"
-            onClick={this.handleUserDdataModalCancel}
+            onClick={this.handleUserDataModalCancel}
           >
             Cancel
           </Button>,
