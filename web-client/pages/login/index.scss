@@ -24,6 +24,11 @@
   border: 1px solid #ccc;
   border-radius: 3px;
   padding: 16px;
+  width: 320px;
+
+  .ant-alert {
+    margin-bottom: 16px;
+  }
 
   .auth-page-title {
     margin-bottom: 16px;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button } from 'antd';
+import { Button, Alert } from 'antd';
 
 import { authenticate, signup } from '../../domain/auth';
 
@@ -31,10 +31,9 @@ export class AuthenticatePage extends Component {
   async handleLogin() {
     const { username, password } = this.authForm.getFormData();
     try {
-      const response = await this.props.authenticate({
+      await this.props.authenticate({
         username, password,
       });
-      console.log('login success', response);
     } catch (err) {
       console.log(err);
     }
@@ -43,20 +42,27 @@ export class AuthenticatePage extends Component {
   async handleSignUp() {
     const { username, password } = this.authForm.getFormData();
     try {
-      const response = await this.props.signup({
+      await this.props.signup({
         username, password,
       });
-      console.log('signup success', response);
     } catch (err) {
       console.log(err);
     }
   }
 
+  renderErrorBox() {
+    return (
+      <Alert message={this.props.error} type="error" />
+    );
+  }
+
   render() {
+    const { error } = this.props;
     return (
       <PageContent className="auth-page">
         <div className="auth-page-form-wrapper">
           <h2 className="auth-page-title">Login / Signup</h2>
+          { error && this.renderErrorBox() }
           <div>
             <UserAuthForm ref={this.setAuthFormRef} onSubmit={this.handleLogin} />
             <div className="auth-page-actions">
@@ -75,13 +81,19 @@ export class AuthenticatePage extends Component {
   }
 }
 
+AuthenticatePage.defaultProps = {
+  error: null,
+};
+
 AuthenticatePage.propTypes = {
   authenticate: PropTypes.func.isRequired,
   signup: PropTypes.func.isRequired,
+  error: PropTypes.string,
 };
 
+
 export default connect(
-  null,
+  state => state.auth,
   dispatch => ({
     authenticate: bindActionCreators(authenticate, dispatch),
     signup: bindActionCreators(signup, dispatch),

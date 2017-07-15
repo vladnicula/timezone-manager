@@ -4,6 +4,7 @@ import cookie from 'js-cookie';
 import {
   SET_AUTH_TOKEN,
   CLEAR_AUTH_TOKEN,
+  AUTH_ERROR,
 } from './actions';
 
 import {
@@ -27,7 +28,23 @@ const authenticate = ({ username, password }) => async (dispatch) => {
       token: jwt,
     });
   } catch (err) {
-    console.log('login error', err);
+    console.log(err, err.response);
+    if (err.response && err.response.data.message) {
+      dispatch({
+        type: AUTH_ERROR,
+        error: err.response.data.message,
+      });
+    } else if (err.message === 'Network Error') {
+      dispatch({
+        type: AUTH_ERROR,
+        error: 'API Server not reachable',
+      });
+    } else {
+      dispatch({
+        type: AUTH_ERROR,
+        error: err.toString(),
+      });
+    }
   }
 };
 
@@ -56,7 +73,22 @@ const signup = ({ username, password }) => async (dispatch) => {
       token: jwt,
     });
   } catch (err) {
-    console.log('signup error', err);
+    if (err.response && err.response.data.message) {
+      dispatch({
+        type: AUTH_ERROR,
+        error: err.response.data.message,
+      });
+    } else if (err.message === 'Network Error') {
+      dispatch({
+        type: AUTH_ERROR,
+        error: 'API Server not reachable',
+      });
+    } else {
+      dispatch({
+        type: AUTH_ERROR,
+        error: err.toString(),
+      });
+    }
   }
 };
 
@@ -74,9 +106,11 @@ export { logout };
 const reducer = (state = {}, action = {}) => {
   switch (action.type) {
     case SET_AUTH_TOKEN:
-      return { ...state, token: action.token };
+      return { ...state, token: action.token, error: false };
     case CLEAR_AUTH_TOKEN:
-      return { ...state, token: null };
+      return { ...state, token: null, error: false };
+    case AUTH_ERROR:
+      return { ...state, token: null, error: action.error };
     default:
       return state;
   }

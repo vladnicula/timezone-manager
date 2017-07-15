@@ -186,7 +186,7 @@ export default {
     const { username, password } = req.body;
 
     if (!username || !password) {
-      return res.status(403).json({
+      return res.status(400).json({
         status: 'error',
         message: 'empty user credentials',
       });
@@ -197,14 +197,14 @@ export default {
     });
 
     if (!matchedUser) {
-      return res.status(401).json({
+      return res.status(400).json({
         status: 'error',
         message: 'invalid user credentials',
       });
     }
 
     if (!bcrypt.compareSync(password, matchedUser.password)) {
-      return res.status(401).json({
+      return res.status(400).json({
         status: 'error',
         message: 'invalid user password',
       });

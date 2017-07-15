@@ -19,10 +19,16 @@ export default function (err, req, res, next) {
   // console.log(err);
   // }
   if (err.name === 'ValidationError') {
-    return res.status(403).json({
+    if (err.errors) {
+      return res.status(400).json({
+        status: 'error',
+        message: err.errors[Object.keys(err.errors)[0]].message,
+        errors: err.errors,
+      });
+    }
+    return res.status(400).json({
       status: 'error',
       message: 'Validation Error',
-      errors: err.errors,
     });
   }
 
