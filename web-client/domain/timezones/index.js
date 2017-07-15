@@ -241,6 +241,12 @@ const reducer = (state = {}, action = {}) => {
         working: false,
         error: action.error || 'unknown error',
       };
+
+    case CLEAR_TIMEZONE_ERROR:
+      return {
+        ...state,
+        error: null,
+      };
     default:
       return state;
   }

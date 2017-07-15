@@ -3,9 +3,15 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { Modal, Button } from 'antd';
+import { Modal, Button, Alert } from 'antd';
 
-import { fetchUsers, updateUser, deleteUser, createUser } from '../../domain/users';
+import {
+  fetchUsers,
+  updateUser,
+  deleteUser,
+  createUser,
+  clearUsersError,
+} from '../../domain/users';
 
 import PageContent from '../../components/page-content';
 
@@ -77,7 +83,15 @@ export class UsersPage extends Component {
       this.props.createUser(newUserData);
     }
 
-    this.setState({
+    const { error } = this.props;
+
+    if (error) {
+      return this.setState({
+        loading: false,
+      });
+    }
+
+    return this.setState({
       loading: false,
     }, () => (
         this.setState({
@@ -104,6 +118,13 @@ export class UsersPage extends Component {
       console.log(`User deletion failed for id ${userToDeleteById}`);
       console.error(err);
     }
+
+    const { error } = this.props;
+
+    if (error) {
+      return this.setState({ loading: false });
+    }
+    return this.setState({ loading: false, userToDeleteById: null, deleteModalVisible: false });
   }
 
   handleDeleteRequest(id) {
@@ -114,6 +135,7 @@ export class UsersPage extends Component {
   }
 
   handleUserDeleteModalCancel() {
+    this.props.clearUsersError();
     this.setState({
       deleteModalVisible: false,
     });
@@ -144,6 +166,7 @@ export class UsersPage extends Component {
           </Button>,
         ]}
       >
+        { this.props.error && <Alert message={this.props.error} type="error" /> }
         <p>Are you sure you want to delete this timezone record?</p>
       </Modal>
     );
@@ -192,6 +215,7 @@ export class UsersPage extends Component {
           </Button>,
         ]}
       >
+        { this.props.error && <Alert message={this.props.error} type="error" /> }
         <UserForm {...userFormProps} />
       </Modal>
     );
@@ -228,6 +252,7 @@ export class UsersPage extends Component {
 
 UsersPage.defaultProps = {
   users: [],
+  error: '',
 };
 
 UsersPage.propTypes = {
@@ -235,12 +260,18 @@ UsersPage.propTypes = {
   fetchUsers: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
   deleteUser: PropTypes.func.isRequired,
+  clearUsersError: PropTypes.func.isRequired,
+  error: PropTypes.string,
   users: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default connect(
   state => state.users,
   dispatch => bindActionCreators({
-    fetchUsers, updateUser, deleteUser, createUser,
+    fetchUsers,
+    updateUser,
+    deleteUser,
+    createUser,
+    clearUsersError,
   }, dispatch),
 )(UsersPage);

@@ -7,6 +7,7 @@ import {
   USERS_OPERATION_SUCCESS,
   USERS_OPERATION_ERROR,
   SET_CURRENT_USER,
+  CLEAR_USERS_ERROR,
 } from './actions';
 
 import {
@@ -26,15 +27,34 @@ const fetchUsers = accessToken => async (dispatch) => {
     },
   };
 
-  const response = await axios.get(
-    'http://localhost:3185/api/v1/user',
-    authOptions,
-  );
+  try {
+    const response = await axios.get(
+      'http://localhost:3185/api/v1/user',
+      authOptions,
+    );
 
-  dispatch({
-    type: SET_USERS,
-    users: response.data.users,
-  });
+    dispatch({
+      type: SET_USERS,
+      users: response.data.users,
+    });
+  } catch (err) {
+    if (err.response && err.response.data.message) {
+      dispatch({
+        type: USERS_OPERATION_ERROR,
+        error: err.response.data.message,
+      });
+    } else if (err.message === 'Network Error') {
+      dispatch({
+        type: USERS_OPERATION_ERROR,
+        error: 'API Server not reachable',
+      });
+    } else {
+      dispatch({
+        type: USERS_OPERATION_ERROR,
+        error: err.toString(),
+      });
+    }
+  }
 };
 
 export { fetchUsers };
@@ -50,16 +70,34 @@ const fetchMe = accessToken => async (dispatch) => {
       'x-access-token': jwt,
     },
   };
+  try {
+    const response = await axios.get(
+      'http://localhost:3185/api/v1/user/me',
+      authOptions,
+    );
 
-  const response = await axios.get(
-    'http://localhost:3185/api/v1/user/me',
-    authOptions,
-  );
-
-  dispatch({
-    type: SET_CURRENT_USER,
-    currentUser: response.data.users[0],
-  });
+    dispatch({
+      type: SET_CURRENT_USER,
+      currentUser: response.data.users[0],
+    });
+  } catch (err) {
+    if (err.response && err.response.data.message) {
+      dispatch({
+        type: USERS_OPERATION_ERROR,
+        error: err.response.data.message,
+      });
+    } else if (err.message === 'Network Error') {
+      dispatch({
+        type: USERS_OPERATION_ERROR,
+        error: 'API Server not reachable',
+      });
+    } else {
+      dispatch({
+        type: USERS_OPERATION_ERROR,
+        error: err.toString(),
+      });
+    }
+  }
 };
 
 export { fetchMe };
@@ -94,10 +132,22 @@ const createUser = userData => async (dispatch) => {
       type: USERS_OPERATION_SUCCESS,
     });
   } catch (err) {
-    dispatch({
-      type: USERS_OPERATION_ERROR,
-      error: err,
-    });
+    if (err.response && err.response.data.message) {
+      dispatch({
+        type: USERS_OPERATION_ERROR,
+        error: err.response.data.message,
+      });
+    } else if (err.message === 'Network Error') {
+      dispatch({
+        type: USERS_OPERATION_ERROR,
+        error: 'API Server not reachable',
+      });
+    } else {
+      dispatch({
+        type: USERS_OPERATION_ERROR,
+        error: err.toString(),
+      });
+    }
   }
 };
 
@@ -131,10 +181,22 @@ const deleteUser = userId => async (dispatch) => {
       type: USERS_OPERATION_SUCCESS,
     });
   } catch (err) {
-    dispatch({
-      type: USERS_OPERATION_ERROR,
-      error: err,
-    });
+    if (err.response && err.response.data.message) {
+      dispatch({
+        type: USERS_OPERATION_ERROR,
+        error: err.response.data.message,
+      });
+    } else if (err.message === 'Network Error') {
+      dispatch({
+        type: USERS_OPERATION_ERROR,
+        error: 'API Server not reachable',
+      });
+    } else {
+      dispatch({
+        type: USERS_OPERATION_ERROR,
+        error: err.toString(),
+      });
+    }
   }
 };
 
@@ -169,14 +231,32 @@ const updateUser = (userId, patchPayload) => async (dispatch) => {
       type: USERS_OPERATION_SUCCESS,
     });
   } catch (err) {
-    dispatch({
-      type: USERS_OPERATION_ERROR,
-      error: err,
-    });
+    if (err.response && err.response.data.message) {
+      dispatch({
+        type: USERS_OPERATION_ERROR,
+        error: err.response.data.message,
+      });
+    } else if (err.message === 'Network Error') {
+      dispatch({
+        type: USERS_OPERATION_ERROR,
+        error: 'API Server not reachable',
+      });
+    } else {
+      dispatch({
+        type: USERS_OPERATION_ERROR,
+        error: err.toString(),
+      });
+    }
   }
 };
 
 export { updateUser };
+
+const clearUsersError = () => ({
+  type: CLEAR_USERS_ERROR,
+});
+
+export { clearUsersError };
 
 const reducer = (state = {}, action = {}) => {
   switch (action.type) {
@@ -188,13 +268,12 @@ const reducer = (state = {}, action = {}) => {
       return {
         ...state,
         working: true,
-        error: false,
       };
     case USERS_OPERATION_SUCCESS:
       return {
         ...state,
         working: false,
-        error: false,
+        error: null,
       };
     case USERS_OPERATION_ERROR:
       return {
@@ -214,6 +293,12 @@ const reducer = (state = {}, action = {}) => {
       return {
         ...state,
         currentUser: {},
+      };
+
+    case CLEAR_USERS_ERROR:
+      return {
+        ...state,
+        error: null,
       };
 
     default:

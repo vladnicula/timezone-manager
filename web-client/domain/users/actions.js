@@ -12,3 +12,6 @@ export { USERS_OPERATION_SUCCESS };
 
 const USERS_OPERATION_ERROR = 'tzm-users-operation-error';
 export { USERS_OPERATION_ERROR };
+
+const CLEAR_USERS_ERROR = 'tzm-users-clear-error';
+export { CLEAR_USERS_ERROR };

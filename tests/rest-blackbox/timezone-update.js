@@ -103,7 +103,7 @@ test.serial('Anon PATCH /api/v1/timezone', async (t) => {
       .patch(`/api/v1/timezone/${tz1Id}`)
       .send(payload)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }
@@ -151,7 +151,7 @@ test.serial('Manager PATCH /api/v1/timezone', async (t) => {
         offset: 6,
       })
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }

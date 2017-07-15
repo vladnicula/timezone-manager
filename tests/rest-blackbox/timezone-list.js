@@ -42,7 +42,7 @@ test.serial('Anon GET /api/v1/timezone', async (t) => {
     await server
       .get('/api/v1/timezone')
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }
@@ -100,7 +100,7 @@ test.serial('Manager GET /api/v1/timezone/userId', async (t) => {
       .get(`/api/v1/timezone?user_id=${userId}`)
       .set('x-access-token', managerAuthToken)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }
@@ -130,7 +130,7 @@ test.serial('User GET /api/v1/timezone?userId', async (t) => {
       .get(`/api/v1/timezone?user_id=${managerId}`)
       .set('x-access-token', userAuthToken)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }

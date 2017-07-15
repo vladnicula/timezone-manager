@@ -96,7 +96,7 @@ test.serial('Anon DELETE /api/v1/timezone', async (t) => {
     await server
       .delete(`/api/v1/timezone/${tz1Id}`)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }
@@ -138,7 +138,7 @@ test.serial('Manager DELETE /api/v1/timezone', async (t) => {
       .delete(`/api/v1/timezone/${tz1Id}`)
       .set('x-access-token', managerAuthToken)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }

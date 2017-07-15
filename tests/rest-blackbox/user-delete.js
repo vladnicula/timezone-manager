@@ -109,7 +109,7 @@ test.serial('Manager DELETE /api/v1/user', async (t) => {
       .delete(`/api/v1/user/${adminId}`)
       .set('x-access-token', managerAuth)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
 
     await server
       .delete(`/api/v1/user/${managerId}`)
@@ -136,7 +136,7 @@ test.serial('Simple user DELETE /api/v1/user', async (t) => {
       .delete(`/api/v1/user/${userId}`)
       .set('x-access-token', userAuthToken)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }
@@ -149,7 +149,7 @@ test.serial('Anon DELETE /api/v1/user', async (t) => {
     await server
       .delete('/api/v1/user/132131')
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }

@@ -14,7 +14,7 @@ export default function requireLogin(req, res, next) {
       return next();
     });
   } else {
-    return res.status(403).send({
+    return res.status(400).send({
       status: 'error',
       message: 'Authentication token required and not provided.',
     });
@@ -34,7 +34,6 @@ export function prepareLogin(req, res, next) {
       req.decoded = decoded;
       return next();
     });
-  } else {
-    return next();
   }
+  return next();
 }

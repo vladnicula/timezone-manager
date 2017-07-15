@@ -101,7 +101,7 @@ test.serial('User GET /api/v1/user', async (t) => {
       .get('/api/v1/user')
       .set('x-access-token', authToken)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
 
     await server
       .get(`/api/v1/user/${newUserId}`)

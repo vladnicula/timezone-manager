@@ -8,7 +8,7 @@ export default {
     const { role: authRole, _id: authId } = decoded;
 
     if ((userId !== undefined && userId !== authId) && authRole !== 2) {
-      return res.status(403).json({
+      return res.status(400).json({
         status: 'error',
         message: 'Cannot access timezone list of target account.',
       });
@@ -58,7 +58,7 @@ export default {
 
     if (targetUserId !== decoded._id) {
       if (currentAccount.role !== 2) {
-        return res.status(403).json({
+        return res.status(400).json({
           status: 'error',
           message: 'Cannot add timezone to target account.',
         });
@@ -66,7 +66,7 @@ export default {
 
       const targetAccount = await User.findById(targetUserId);
       if (currentAccount.role < targetAccount.role) {
-        return res.status(403).json({
+        return res.status(400).json({
           status: 'error',
           message: 'Cannot add timezone to target account.',
         });
@@ -92,14 +92,14 @@ export default {
     const currentUserIdForTimezone = timezone.userId.toString();
 
     if (userId && currentUserIdForTimezone !== userId) {
-      return res.status(403).json({
+      return res.status(400).json({
         status: 'error',
         message: 'Changing user id of timezone not allowed.',
       });
     }
 
     if (authId !== currentUserIdForTimezone && authRole !== 2) {
-      return res.status(403).json({
+      return res.status(400).json({
         status: 'error',
         message: 'Cannot update timezone of another user.',
       });
@@ -133,7 +133,7 @@ export default {
     const currentUserIdForTimezone = timezone.userId.toString();
 
     if (authId !== currentUserIdForTimezone && authRole !== 2) {
-      return res.status(403).json({
+      return res.status(400).json({
         status: 'error',
         message: 'Cannot delete timezone of another user.',
       });

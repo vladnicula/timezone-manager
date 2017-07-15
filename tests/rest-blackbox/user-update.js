@@ -120,7 +120,7 @@ test.serial('Manager PATCH /api/v1/user', async (t) => {
     await patchUser(server, newUserId,
       {
         role: 2,
-      }, managerAuthToken, 403,
+      }, managerAuthToken, 400,
     );
   } catch (err) {
     t.fail(err);
@@ -160,7 +160,7 @@ test.serial('Manager PATCH /api/v1/user tries to change admin role or details', 
     await patchUser(server, adminIdResponse.body.users[0]._id,
       {
         role: 2,
-      }, managerAuthToken, 403,
+      }, managerAuthToken, 400,
     );
   } catch (err) {
     t.fail(err);
@@ -186,11 +186,11 @@ test.serial('User PATCH /api/v1/user can update self but not role', async (t) =>
     await patchUser(server, newUserId, {
       role: 1,
       password: '1234',
-    }, userAuthToken, 403);
+    }, userAuthToken, 400);
 
     await patchUser(server, newUserId, {
       username: 'user-01-patcher-2',
-    }, userAuthToken, 403);
+    }, userAuthToken, 400);
 
     await patchUser(server, newUserId, {
       username: 'user-01-patcher-2',
@@ -235,7 +235,7 @@ test.serial('User PATCH /api/v1/user can update  password', async (t) => {
     await patchUser(server, newUserId, {
       username: 'username-updated-01-password-change',
       password: '1234',
-    }, userAuthToken, 403);
+    }, userAuthToken, 400);
 
     await patchUser(server, newUserId, {
       username: 'username-updated-01-password-change',

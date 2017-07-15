@@ -8,7 +8,7 @@ export default {
   listAll: async (req, res) => {
     const decoded = req.decoded;
     if (!decoded.role) {
-      return res.status(403).json({
+      return res.status(400).json({
         status: 'error',
         message: 'Action not allowed with curreny user role',
       });
@@ -27,7 +27,7 @@ export default {
     const target = await User.findById(id);
 
     if (!currentUser || !currentUser.role || target.role > currentUser.role) {
-      return res.status(403).json({
+      return res.status(400).json({
         status: 'error',
         message: 'Cannot delete this user',
       });
@@ -40,7 +40,7 @@ export default {
       });
     }
 
-    return res.status(403).json({
+    return res.status(400).json({
       status: 'error',
       message: 'User not found',
     });
@@ -53,7 +53,7 @@ export default {
     if (role) {
       // see if we have decode info
       if (!decoded) {
-        return res.status(403).json({
+        return res.status(400).json({
           status: 'error',
           message: 'Cannot create user with role. Authenticatied user not found.',
         });
@@ -64,7 +64,7 @@ export default {
       const currentUser = await User.findById(decoded._id).select('_id, username, role');
 
       if (!currentUser) {
-        return res.status(403).json({
+        return res.status(400).json({
           status: 'error',
           message: 'Cannot create user with role. Authenticatied user not found.',
         });
@@ -75,7 +75,7 @@ export default {
          * Only admins edit admins
          */
       if ((authRole < 1 && role > 0) || (role === 2 && authRole < 2)) {
-        return res.status(403).json({
+        return res.status(400).json({
           status: 'error',
           message: 'Logged in user cannot set that role to a new user',
           debug: { user: currentUser.json(), requestedRole: role },
@@ -123,7 +123,7 @@ export default {
      * Only admins edit admins
      */
     if (targetUser.role === 2 && authRole < 2) {
-      return res.status(403).json({
+      return res.status(400).json({
         status: 'error',
         message: 'Authorisation failed. Only admins can edit admins',
       });
@@ -133,7 +133,7 @@ export default {
       (role !== undefined && !authRole)
       || (role === 2 && authRole !== 2)
     ) {
-      return res.status(403).json({
+      return res.status(400).json({
         status: 'error',
         message: 'Authorisation failed. Role operation denyed.',
       });
@@ -144,14 +144,14 @@ export default {
      */
     if (!authRole) {
       if (id && authId !== id) {
-        return res.status(403).json({
+        return res.status(400).json({
           status: 'error',
           message: 'Authorisation failed. Users can only change their own details',
         });
       }
 
       if (!password || !bcrypt.compareSync(password, targetUser.password)) {
-        return res.status(403).json({
+        return res.status(400).json({
           status: 'error',
           message: 'Authorisation failed. User password incorrect',
         });

@@ -47,7 +47,7 @@ test.serial('POST /api/v1/user (create new user) no passs', async (t) => {
       .post('/api/v1/user')
       .send(payload)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }
@@ -67,7 +67,7 @@ test.serial('POST /api/v1/user (create new user) invalid pass', async (t) => {
       .post('/api/v1/user')
       .send(payload)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }
@@ -87,7 +87,7 @@ test.serial('POST /api/v1/user (create new user) emtpy username', async (t) => {
       .post('/api/v1/user')
       .send(payload)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }
@@ -106,7 +106,7 @@ test.serial('POST /api/v1/user (create new user) invalid username', async (t) =>
       .post('/api/v1/user')
       .send(payload)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }

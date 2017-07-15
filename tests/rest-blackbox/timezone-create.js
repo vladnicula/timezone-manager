@@ -64,7 +64,7 @@ test.serial('Anon POST /api/v1/timezone (create new timezone)', async (t) => {
       .post('/api/v1/timezone')
       .send(payload)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }
@@ -106,28 +106,28 @@ test.serial('User POST /api/v1/timezone (create new timezone) invalid data', asy
       .post('/api/v1/timezone')
       .set('x-access-token', userAuthToken)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
 
     await server
       .post('/api/v1/timezone')
       .set('x-access-token', userAuthToken)
       .send({ name: payload.name })
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
 
     await server
       .post('/api/v1/timezone')
       .set('x-access-token', userAuthToken)
       .send({ city: payload.city })
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
 
     await server
       .post('/api/v1/timezone')
       .set('x-access-token', userAuthToken)
       .send({ offset: payload.offset })
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }
@@ -156,7 +156,7 @@ test.serial('User POST /api/v1/timezone (create new timezone) same data', async 
       .set('x-access-token', userAuthToken)
       .send(payload)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }
@@ -182,7 +182,7 @@ test.serial('User POST /api/v1/timezone (create new timezone) other user id targ
       .set('x-access-token', userAuthToken)
       .send(payload)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }
@@ -207,7 +207,7 @@ test.serial('User POST /api/v1/timezone (create new timezone) invalid data', asy
         name: 'nam',
       })
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
 
     await server
       .post('/api/v1/timezone')
@@ -217,7 +217,7 @@ test.serial('User POST /api/v1/timezone (create new timezone) invalid data', asy
         city: 'nam',
       })
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
 
     await server
       .post('/api/v1/timezone')
@@ -227,7 +227,7 @@ test.serial('User POST /api/v1/timezone (create new timezone) invalid data', asy
         offset: 'potato',
       })
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }
@@ -285,7 +285,7 @@ test.serial('Manager POST /api/v1/timezone (create new timezone) other user id t
       .set('x-access-token', managerAuthToken)
       .send(payload)
       .expect('Content-Type', /json/)
-      .expect(403);
+      .expect(400);
   } catch (err) {
     t.fail(err);
   }
