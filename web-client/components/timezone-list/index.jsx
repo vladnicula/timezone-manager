@@ -1,18 +1,33 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import moment from 'moment-timezone';
+
 import { EditIcon, DeleteIcon } from '../icons';
 import { getDataValueByKey } from '../../utils/dom-props';
+
 
 if (process.env.BROWSER) {
   require('./index.scss');
 }
 
+const formatOffset = offset => (
+  offset >= 0 ? `+${offset}` : `${offset}`
+);
+
 const TimezoneListItem = (props) => {
   const { name, city, offset, _id, onEdit, onDelete } = props;
   return (
     <div className="timezone-list-item" data-timezone-id={_id}>
-      <div className="user-list-item-title">{name} - {city} - {offset}</div>
+      <div className="timezone-list-item-title">
+        <div className="timezone-list-item-heading">
+          {name} - GMT{formatOffset(offset)}
+        </div>
+        <div className="timezone-list-item-meta">
+          {city} - {moment().utcOffset(offset * 60).format('ddd HH:mm')}
+        </div>
+      </div>
+
       <div className="timezone-list-item-controls">
         <span
           tabIndex={0}
@@ -48,9 +63,30 @@ TimezoneListItem.propTypes = {
 export default class TimezoneList extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      timezones: [...props.timezones],
+    };
+
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.renderTimezone = this.renderTimezone.bind(this);
+  }
+
+  componentDidMount() {
+    this.updateTo = setTimeout(() => {
+      this.refreshTimezoneListTimes();
+    }, this.props.updateInterval);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      timezones: [...nextProps.timezones],
+    });
+  }
+
+  componentWillUnMount() {
+    clearTimeout(this.updateTo);
   }
 
   handleEdit(ev) {
@@ -67,6 +103,12 @@ export default class TimezoneList extends Component {
     }
   }
 
+  refreshTimezoneListTimes() {
+    this.setState({
+      timezones: [...this.state.timezones],
+    });
+  }
+
   renderTimezone(timezone) {
     return (
       <TimezoneListItem
@@ -79,7 +121,7 @@ export default class TimezoneList extends Component {
   }
 
   render() {
-    const { timezones } = this.props;
+    const { timezones } = this.state;
 
     return (
       <div className="timezone-list">
@@ -90,8 +132,13 @@ export default class TimezoneList extends Component {
   }
 }
 
+TimezoneList.defaultProps = {
+  updateInterval: 30 * 1000,
+};
+
 TimezoneList.propTypes = {
   timezones: PropTypes.arrayOf(PropTypes.object).isRequired,
   onEditReuqest: PropTypes.func.isRequired,
   onDeleteRequest: PropTypes.func.isRequired,
+  updateInterval: PropTypes.number,
 };

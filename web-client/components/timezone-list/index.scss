@@ -14,9 +14,9 @@
 
 .timezone-list-item-title {
   flex: 1;
-  display: flex;
-  align-items: center;
-  font-weight: 700;
+  .timezone-list-item-heading {
+    font-weight: 700;
+  }
 }
 
 .timezone-list-item-controls {

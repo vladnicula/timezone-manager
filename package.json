@@ -27,6 +27,7 @@
     "html-webpack-plugin": "^2.29.0",
     "js-cookie": "^2.1.4",
     "jsonwebtoken": "^7.4.1",
+    "moment-timezone": "^0.5.13",
     "mongoose": "^4.11.1",
     "mongoose-unique-validator": "^1.0.5",
     "morgan": "^1.8.2",
