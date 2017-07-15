@@ -32,6 +32,7 @@ export default {
       // query.$text = { $search: `"${filterName}"` };
       query.name = {
         $regex: `.*${filterName}.*`,
+        $options: 'i',
       };
     }
 
