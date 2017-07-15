@@ -4,10 +4,14 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Button } from 'antd';
 
-import { authenticate, signup } from '../domain/auth';
+import { authenticate, signup } from '../../domain/auth';
 
-import PageContent from '../components/page-content';
-import UserAuthForm from '../components/user-auth-form';
+import PageContent from '../../components/page-content';
+import UserAuthForm from '../../components/user-auth-form';
+
+if (process.env.BROWSER) {
+  require('./index.scss');
+}
 
 export class AuthenticatePage extends Component {
 
@@ -50,18 +54,21 @@ export class AuthenticatePage extends Component {
 
   render() {
     return (
-      <PageContent>
-        <h2>Login / Signup</h2>
-        <div>
-          <UserAuthForm ref={this.setAuthFormRef} onSubmit={this.handleLogin} />
+      <PageContent className="auth-page">
+        <div className="auth-page-form-wrapper">
+          <h2 className="auth-page-title">Login / Signup</h2>
+          <div>
+            <UserAuthForm ref={this.setAuthFormRef} onSubmit={this.handleLogin} />
+            <div className="auth-page-actions">
+              <Button type="primary" onClick={this.handleLogin}>
+                Login
+              </Button>
 
-          <Button onClick={this.handleLogin}>
-            Login
-          </Button>
-
-          <Button onClick={this.handleSignUp}>
-            Signup
-          </Button>
+              <Button onClick={this.handleSignUp}>
+                Signup
+              </Button>
+            </div>
+          </div>
         </div>
       </PageContent>
     );
