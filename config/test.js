@@ -13,5 +13,6 @@ module.exports = {
 
   client: {
     API_ENDPOINT: `${API_PROTOCOL}//${APP_HOST}:${APP_PORT}`,
+    WEB_SERVER_PORT: 3050,
   },
 };
