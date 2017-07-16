@@ -40,6 +40,11 @@ const fetchUsers = accessToken => async (dispatch) => {
     });
   } catch (err) {
     if (err.response && err.response.data.message) {
+      if (err.response.data.message.indexOf('Action not allowed with curreny user role') !== -1) {
+        dispatch({
+          type: CLEAR_AUTH_TOKEN,
+        });
+      }
       dispatch({
         type: USERS_OPERATION_ERROR,
         error: err.response.data.message,
