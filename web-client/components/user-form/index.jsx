@@ -1,47 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Input, Button, Select } from 'antd';
-
-const Option = Select.Option;
+import { Input, Select, Form } from 'antd';
 
 if (process.env.BROWSER) {
   require('./index.scss');
 }
 
-export default class UserForm extends Component {
+const FormItem = Form.Item;
+const Option = Select.Option;
+
+export class UserForm extends Component {
   constructor(props) {
     super(props);
-    const { providedPassword, providedUserName, providedRole } = props;
-    this.state = {
-      username: providedUserName,
-      password: providedPassword,
-      role: providedRole,
-    };
-
-    this.setUserName = this.setValueOnChange.bind(this, 'username');
-    this.setPassword = this.setValueOnChange.bind(this, 'password');
-    this.setRole = this.setRole.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { providedUserName, providedPassword, providedRole } = nextProps;
-    if (providedUserName !== undefined && providedUserName !== this.props.providedUserName) {
-      this.setState({ username: providedUserName });
-    }
-    if (providedPassword !== undefined && providedPassword !== this.props.providedPassword) {
-      this.setState({ password: providedPassword });
-    }
-    if (providedRole !== undefined && providedRole !== this.props.providedRole) {
-      this.setState({ role: providedRole });
-    }
-  }
-
-  setRole(value) {
-    this.setState({
-      role: parseInt(value, 10),
-    });
   }
 
   setValueOnChange(key, ev) {
@@ -50,64 +22,84 @@ export default class UserForm extends Component {
     });
   }
 
-  getFormData() {
-    const { username, password, role } = this.state;
-    return {
-      username, password, role,
-    };
-  }
-
-  handleSubmit() {
-    const { username, password, role } = this.state;
-    this.props.onSubmit({ username, password, role });
+  handleFormSubmit(ev) {
+    if (ev) {
+      ev.preventDefault();
+    }
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        this.props.onSubmit(values);
+      }
+    });
   }
 
   handleKeyUp(ev) {
     if (ev.which === 13) {
-      this.handleSubmit();
+      this.handleFormSubmit();
     }
   }
 
   render() {
-    const { role, username, password } = this.state;
+    const { providedUserName, providedRole, providedPassword } = this.props;
+    const { getFieldDecorator } = this.props.form;
     return (
-      <div className="user-form">
-        <label htmlFor="username">
-          Username:
-          <Input
-            onKeyUp={this.handleKeyUp}
-            placeholder="username"
-            value={username}
-            onChange={this.setUserName}
-            type="text"
-            name="username"
-          />
-        </label>
-        <label htmlFor="password">
-          Password:
-          <Input
-            onKeyUp={this.handleKeyUp}
-            placeholder="password"
-            value={password}
-            onChange={this.setPassword}
-            type="password"
-            name="password"
-          />
-        </label>
-        <div className="user-form-role-control">
-          <Select
-            name="user-role"
-            value={role.toString()}
-            style={{ flex: 1 }}
-            onChange={this.setRole}
-          >
-            <Option value={'0'}>User</Option>
-            <Option value={'1'}>Manager</Option>
-            <Option value={'2'}>Admin</Option>
-          </Select>
+      <Form onSubmit={this.handleFormSubmit} className="user-form">
+        <FormItem label="Username">
+          {getFieldDecorator('username', {
+            initialValue: providedUserName,
+            rules: [
+              { required: true, message: 'Please provide your username!' },
+              { min: 4, message: 'username cannot be less than 4 characters long' },
+              { max: 12, message: 'username cannot be more than 12 characters long' },
+              {
+                pattern: /^[A-Za-z0-9\-_]+$/,
+                message: 'username must contain only letters, numbers, "-" and "_"',
+              },
+            ],
+          })(
+            <Input
+              onKeyUp={this.handleKeyUp}
+              placeholder="Username"
+            />,
+          )}
+        </FormItem>
 
-        </div>
-      </div>
+        <FormItem label="Password">
+          {getFieldDecorator('password', {
+            initialValue: providedPassword,
+            rules: [
+              { min: 4, message: 'password cannot be less than 4 characters long' },
+              { max: 12, message: 'password cannot be more than 12 characters long' },
+            ],
+          })(
+            <Input
+              onKeyUp={this.handleKeyUp}
+              type="password"
+              placeholder="Password"
+            />,
+          )}
+        </FormItem>
+
+        <FormItem label="Role">
+          {getFieldDecorator('role', {
+            initialValue: providedRole.toString(),
+            rules: [
+              { required: true, message: 'Please provide your password!' },
+            ],
+          })(
+            <Select
+              className="user-form-role-control"
+              name="user-role"
+              style={{ flex: 1 }}
+              onChange={this.setRole}
+            >
+              <Option value={'0'}>User</Option>
+              <Option value={'1'}>Manager</Option>
+              <Option value={'2'}>Admin</Option>
+            </Select>,
+          )}
+        </FormItem>
+      </Form>
     );
   }
 }
@@ -126,4 +118,10 @@ UserForm.propTypes = {
   providedPassword: PropTypes.string,
   providedRole: PropTypes.number,
   onSubmit: PropTypes.func,
+  form: PropTypes.shape({
+    getFieldDecorator: PropTypes.func.isRequired,
+    validateFields: PropTypes.func.isRequired,
+  }).isRequired,
 };
+
+export default Form.create()(UserForm);

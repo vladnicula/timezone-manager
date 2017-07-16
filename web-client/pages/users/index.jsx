@@ -55,6 +55,17 @@ export class UsersPage extends Component {
     }
   }
 
+  getFormData() {
+    return new Promise((resolve) => {
+      this.userForm.getForm().validateFields(null, {}, (errors, values) => {
+        if (!errors) {
+          return resolve(values);
+        }
+        return resolve(null);
+      });
+    });
+  }
+
   handleCreateFlowStart() {
     this.setState({
       userDataModalVisible: true,
@@ -70,7 +81,11 @@ export class UsersPage extends Component {
 
   async handleUserFormSubmit() {
     const { selectedUserEntity } = this.state;
-    const newUserData = this.userForm.getFormData();
+    const newUserData = await this.getFormData();
+
+    if (!newUserData) {
+      return false;
+    }
 
     this.setState({
       loading: true,
