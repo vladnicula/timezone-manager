@@ -1,60 +1,74 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { Input } from 'antd';
+import { Input, Form } from 'antd';
 
-export default class UserAuthForm extends Component {
+const FormItem = Form.Item;
+
+export class UserAuthForm extends Component {
   constructor(props) {
     super(props);
-    this.setUsername = this.setInputValue.bind(this, 'username');
-    this.setPassword = this.setInputValue.bind(this, 'password');
-    this.handleKeyUp = this.handleKeyUp.bind(this);
-    this.state = {
-      username: '', password: '',
-    };
-  }
 
-  setInputValue(key, ev) {
-    this.setState({
-      [key]: ev.target.value,
-    });
+    this.handleKeyUp = this.handleKeyUp.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
   getFormData() {
-    const { username, password } = this.state;
-    return {
-      username, password,
-    };
+    return this.form.getFieldsValue();
   }
 
   handleKeyUp(ev) {
     if (ev.which === 13) {
-      this.props.onSubmit();
+      this.handleFormSubmit();
     }
   }
 
+  handleFormSubmit(ev) {
+    if (ev) {
+      ev.preventDefault();
+    }
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        this.props.onSubmit(values);
+      }
+    });
+  }
+
   render() {
+    const { getFieldDecorator } = this.props.form;
     return (
-      <div>
-        <label htmlFor="name">
-          Name:
-          <Input
-            onKeyUp={this.handleKeyUp}
-            onChange={this.setUsername}
-            type="name"
-            id="name"
-          />
-        </label><br />
-        <label htmlFor="password">
-          Password:
-          <Input
-            onKeyUp={this.handleKeyUp}
-            onChange={this.setPassword}
-            type="password"
-            id="password"
-          />
-        </label><br />
-      </div>
+      <Form onSubmit={this.handleFormSubmit} className="login-form">
+        <FormItem label="Username">
+          {getFieldDecorator('username', {
+            rules: [
+              { required: true, message: 'Please provide your username!' },
+              { min: 4, message: 'username cannot be less than 4 characters long' },
+              { max: 12, message: 'username cannot be more than 12 characters long' },
+            ],
+          })(
+            <Input
+              onKeyUp={this.handleKeyUp}
+              placeholder="Username"
+            />,
+          )}
+        </FormItem>
+
+        <FormItem label="Password">
+          {getFieldDecorator('password', {
+            rules: [
+              { required: true, message: 'Please provide your password!' },
+              { min: 4, message: 'password cannot be less than 4 characters long' },
+              { max: 12, message: 'password cannot be more than 12 characters long' },
+            ],
+          })(
+            <Input
+              onKeyUp={this.handleKeyUp}
+              type="password"
+              placeholder="Password"
+            />,
+          )}
+        </FormItem>
+      </Form>
     );
   }
 }
@@ -65,4 +79,11 @@ UserAuthForm.defaultProps = {
 
 UserAuthForm.propTypes = {
   onSubmit: PropTypes.func,
+  form: PropTypes.shape({
+    getFieldDecorator: PropTypes.func.isRequired,
+    validateFields: PropTypes.func.isRequired,
+  }).isRequired,
 };
+
+
+export default Form.create()(UserAuthForm);

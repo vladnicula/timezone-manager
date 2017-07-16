@@ -106,9 +106,9 @@ export { logout };
 const reducer = (state = {}, action = {}) => {
   switch (action.type) {
     case SET_AUTH_TOKEN:
-      return { ...state, token: action.token, error: false };
+      return { ...state, token: action.token, error: null };
     case CLEAR_AUTH_TOKEN:
-      return { ...state, token: null, error: false };
+      return { ...state, token: null, error: null };
     case AUTH_ERROR:
       return { ...state, token: null, error: action.error };
     default:

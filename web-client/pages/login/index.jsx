@@ -28,8 +28,24 @@ export class AuthenticatePage extends Component {
     }
   }
 
+  getFormData() {
+    return new Promise((resolve) => {
+      this.authForm.getForm().validateFields(null, {}, (errors, values) => {
+        if (!errors) {
+          return resolve(values);
+        }
+        return resolve(null);
+      });
+    });
+  }
+
   async handleLogin() {
-    const { username, password } = this.authForm.getFormData();
+    const formData = await this.getFormData();
+    if (!formData) {
+      return;
+    }
+    const { username, password } = formData;
+
     try {
       await this.props.authenticate({
         username, password,
@@ -40,7 +56,12 @@ export class AuthenticatePage extends Component {
   }
 
   async handleSignUp() {
-    const { username, password } = this.authForm.getFormData();
+    const formData = await this.getFormData();
+    if (!formData) {
+      return;
+    }
+    const { username, password } = formData;
+
     try {
       await this.props.signup({
         username, password,
