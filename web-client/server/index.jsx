@@ -27,7 +27,7 @@ import errorHandler from './error-handler';
 const app = express();
 
 const configWebpack = () => new Promise((resolve, reject) => {
-  if (process.env.NODE_ENV === 'developmennt') {
+  if (process.env.NODE_ENV === 'development') {
     const compiler = webpack(webpackDevConfig);
     compiler.run((err, stats) => {
       if (err || stats.hasErrors()) {

@@ -11,6 +11,7 @@ import {
   deleteUser,
   createUser,
   clearUsersError,
+  fetchMe,
 } from '../../domain/users';
 
 import PageContent from '../../components/page-content';
@@ -115,6 +116,7 @@ export class UsersPage extends Component {
     }
 
     await this.props.fetchUsers(this.props.accessToken);
+    await this.props.fetchMe(this.props.accessToken);
 
     return this.setState({
       loading: false,
@@ -293,6 +295,7 @@ UsersPage.propTypes = {
   updateUser: PropTypes.func.isRequired,
   deleteUser: PropTypes.func.isRequired,
   clearUsersError: PropTypes.func.isRequired,
+  fetchMe: PropTypes.func.isRequired,
   error: PropTypes.string,
   users: PropTypes.arrayOf(PropTypes.object),
   accessToken: PropTypes.string.isRequired,
@@ -306,5 +309,6 @@ export default connect(
     deleteUser,
     createUser,
     clearUsersError,
+    fetchMe,
   }, dispatch),
 )(UsersPage);
