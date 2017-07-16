@@ -67,7 +67,9 @@ export class UsersPage extends Component {
   }
 
   handleCreateFlowStart() {
-    this.userForm.getForm().resetFields();
+    if (this.userForm) {
+      this.userForm.getForm().resetFields();
+    }
 
     this.setState({
       userDataModalVisible: true,

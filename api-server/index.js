@@ -2,7 +2,7 @@ import config from 'config';
 import setup from './setup';
 
 setup(config).then((app) => {
-  app.listen(config.APP_PORT, config.APP_HOST, () => {
+  app.listen(config.APP_PORT, () => {
     if (process.env.NODE_ENV === 'test' && !process.env.TEST_LOGGERS_ENABLED) {
       return false;
     }

@@ -89,7 +89,7 @@ const createTimezone = timezoneData => async (dispatch) => {
 
   try {
     await axios.post(
-      'http://localhost:3185/api/v1/timezone',
+      `${API_ENDPOINT}/api/v1/timezone`,
       timezoneData,
       authOptions,
     );

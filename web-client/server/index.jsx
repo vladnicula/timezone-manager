@@ -8,8 +8,8 @@ import { StaticRouter } from 'react-router';
 
 import webpack from 'webpack';
 
+import { client } from 'config';
 
-import { WEB_SERVER_PORT } from '../config';
 
 import App from '../App';
 
@@ -26,7 +26,7 @@ import errorHandler from './error-handler';
 const app = express();
 
 const configWebpack = () => new Promise((resolve, reject) => {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV !== 'production') {
     const compiler = webpack(webpackConfig);
     compiler.run((err, stats) => {
       if (err || stats.hasErrors()) {
@@ -100,7 +100,7 @@ app.get('*', asycnRoutehandler(
 );
 
 app.use(errorHandler);
-
+const { WEB_SERVER_PORT } = client;
 configWebpack()
   .then(({ appPath, vendorPath }) => {
     app.set('APP_BUNDLE_PATH', appPath);

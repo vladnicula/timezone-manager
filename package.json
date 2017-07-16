@@ -4,8 +4,12 @@
   "description": "App that shows time in different timezones",
   "author": "Vlad Nicula <vladnicula@gmail.com>",
   "scripts": {
-    "start-server-api-dev": "cross-env NODE_ENV=development node --trace-warnings -r babel-register -r babel-polyfill ./api-server/index.js",
+    "start-api-server-dev": "cross-env NODE_ENV=development node --trace-warnings -r babel-register -r babel-polyfill ./api-server/index.js",
     "start-web-server-dev": "cross-env NODE_ENV=development BABEL_ENV=node node  --inspect --trace-warnings -r babel-register -r babel-polyfill ./web-client/server/index.jsx",
+
+    "start-api-server-test": "cross-env TEST_LOGGERS_ENABLED=true NODE_ENV=test node --trace-warnings -r babel-register -r babel-polyfill ./api-server/index.js",
+    "start-web-server-test": "cross-env NODE_ENV=test BABEL_ENV=node node  --inspect --trace-warnings -r babel-register -r babel-polyfill ./web-client/server/index.jsx",
+    
     "pretest": "cross-env NODE_ENV=test node --trace-warnings -r babel-register -r babel-polyfill ./scripts/pre-test.js",
     "test": "cross-env NODE_ENV=test ava",
     "start-web-client-dev": "cross-env NODE_ENV=development node --trace-warnings -r babel-register -r babel-polyfill ./node_modules/webpack/bin/webpack --config ./web-client/build/webpack.client.config.dev.js  --progress --profile --colors"
