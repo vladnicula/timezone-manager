@@ -275,7 +275,7 @@ export class TimezonesPage extends Component {
     return (
       <Modal
         visible={deleteModalVisible}
-        title="Confirm Deleteion of Timezone"
+        title="Confirm Deletion of Timezone"
         onOk={() => this.handleDeleteStartFlow()}
         onCancel={this.handleTimezoneDeleteModalCancel}
         footer={[

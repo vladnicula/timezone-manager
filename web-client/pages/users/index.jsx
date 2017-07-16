@@ -175,7 +175,7 @@ export class UsersPage extends Component {
     return (
       <Modal
         visible={deleteModalVisible}
-        title="Confirm Deleteion of User"
+        title="Confirm Deletion of User"
         onOk={() => this.handleDeleteStartFlow()}
         onCancel={this.handleUserDeleteModalCancel}
         footer={[
@@ -196,7 +196,7 @@ export class UsersPage extends Component {
         ]}
       >
         { this.props.error && <Alert message={this.props.error} type="error" /> }
-        <p>Are you sure you want to delete this timezone record?</p>
+        <p>Are you sure you want to delete this user record?</p>
       </Modal>
     );
   }
