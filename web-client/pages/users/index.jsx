@@ -67,6 +67,8 @@ export class UsersPage extends Component {
   }
 
   handleCreateFlowStart() {
+    this.userForm.getForm().resetFields();
+
     this.setState({
       userDataModalVisible: true,
     });
@@ -121,6 +123,9 @@ export class UsersPage extends Component {
   }
 
   handleEditStartFlow(id) {
+    if (this.userForm) {
+      this.userForm.getForm().resetFields();
+    }
     this.setState({
       selectedUserEntity: this.props.users.find(user => user._id === id),
       userDataModalVisible: true,

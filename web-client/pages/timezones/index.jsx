@@ -135,6 +135,9 @@ export class TimezonesPage extends Component {
   }
 
   handleEditStartFlow(id) {
+    if (this.timezoneForm) {
+      this.timezoneForm.getForm().resetFields();
+    }
     this.setState({
       selectedTimezoneEntity: this.props.timezones.find(timezone => timezone._id === id),
       modalVisible: true,
@@ -201,6 +204,9 @@ export class TimezonesPage extends Component {
   }
 
   handleTimezoneCreateRequest() {
+    if (this.timezoneForm) {
+      this.timezoneForm.getForm().resetFields();
+    }
     this.setState({
       modalVisible: true,
     });

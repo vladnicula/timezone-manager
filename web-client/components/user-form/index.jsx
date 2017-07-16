@@ -91,7 +91,6 @@ export class UserForm extends Component {
               className="user-form-role-control"
               name="user-role"
               style={{ flex: 1 }}
-              onChange={this.setRole}
             >
               <Option value={'0'}>User</Option>
               <Option value={'1'}>Manager</Option>
