@@ -77,6 +77,7 @@ export class UsersPage extends Component {
   }
 
   handleUserDataModalCancel() {
+    this.props.clearUsersError();
     this.setState({
       userDataModalVisible: false,
       selectedUserEntity: null,
