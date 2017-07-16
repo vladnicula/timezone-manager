@@ -26,7 +26,7 @@ function offsetValidator(number) {
   };
 }
 
-export class TimezoneForm extends Component {
+export class RawTimezoneForm extends Component {
   constructor(props) {
     super(props);
     this.handleKeyUp = this.handleKeyUp.bind(this);
@@ -130,14 +130,14 @@ export class TimezoneForm extends Component {
 
 const emptyFn = () => {};
 
-TimezoneForm.defaultProps = {
+RawTimezoneForm.defaultProps = {
   providedName: '',
   providedCity: '',
   providedOffset: '',
   onSubmit: emptyFn,
 };
 
-TimezoneForm.propTypes = {
+RawTimezoneForm.propTypes = {
   providedName: PropTypes.string,
   providedCity: PropTypes.string,
   providedOffset: PropTypes.number,
@@ -148,4 +148,4 @@ TimezoneForm.propTypes = {
   }).isRequired,
 };
 
-export default Form.create()(TimezoneForm);
+export default Form.create()(RawTimezoneForm);

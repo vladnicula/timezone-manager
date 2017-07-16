@@ -9,7 +9,7 @@ if (process.env.BROWSER) {
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-export class UserForm extends Component {
+export class RawUserForm extends Component {
   constructor(props) {
     super(props);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -105,14 +105,14 @@ export class UserForm extends Component {
 
 const emptyFn = () => {};
 
-UserForm.defaultProps = {
+RawUserForm.defaultProps = {
   providedUserName: '',
   providedPassword: '',
   providedRole: 0,
   onSubmit: emptyFn,
 };
 
-UserForm.propTypes = {
+RawUserForm.propTypes = {
   providedUserName: PropTypes.string,
   providedPassword: PropTypes.string,
   providedRole: PropTypes.number,
@@ -123,4 +123,4 @@ UserForm.propTypes = {
   }).isRequired,
 };
 
-export default Form.create()(UserForm);
+export default Form.create()(RawUserForm);

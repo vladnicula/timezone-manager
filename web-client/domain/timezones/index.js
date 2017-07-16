@@ -1,5 +1,4 @@
 import axios from 'axios';
-import cookie from 'js-cookie';
 import { client } from 'config';
 
 import {
@@ -18,7 +17,7 @@ const fetchTimezones = (authToken, { userId, nameFilter }) => async (dispatch) =
     type: TIMEZONE_OPERATION_START,
   });
 
-  const jwt = authToken || cookie.get('jwt');
+  const jwt = authToken;
   const authOptions = {
     headers: {
       'x-access-token': jwt,
@@ -75,12 +74,12 @@ export { fetchTimezones };
  * either for current user or for another user, with or without filters
  * and pagination
  */
-const createTimezone = timezoneData => async (dispatch) => {
+const createTimezone = (authToken, timezoneData) => async (dispatch) => {
   dispatch({
     type: TIMEZONE_OPERATION_START,
   });
 
-  const jwt = cookie.get('jwt');
+  const jwt = authToken;
   const authOptions = {
     headers: {
       'x-access-token': jwt,
@@ -123,12 +122,12 @@ export { createTimezone };
 /**
  * Deletes a timezone. Assumes api checks roles and priviledges
  */
-const deleteTimezone = timezoneId => async (dispatch) => {
+const deleteTimezone = (authToken, timezoneId) => async (dispatch) => {
   dispatch({
     type: TIMEZONE_OPERATION_START,
   });
 
-  const jwt = cookie.get('jwt');
+  const jwt = authToken;
   const authOptions = {
     headers: {
       'x-access-token': jwt,
@@ -170,12 +169,12 @@ export { deleteTimezone };
  * Updates a timezone identified by id. Assumes roles and priviledges
  * are checked by the api.
  */
-const updateTimezone = (timezoneId, patchPayload) => async (dispatch) => {
+const updateTimezone = (authToken, timezoneId, patchPayload) => async (dispatch) => {
   dispatch({
     type: TIMEZONE_OPERATION_START,
   });
 
-  const jwt = cookie.get('jwt');
+  const jwt = authToken;
   const authOptions = {
     headers: {
       'x-access-token': jwt,

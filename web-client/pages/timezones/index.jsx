@@ -61,7 +61,7 @@ export class TimezonesPage extends Component {
     if (currentUser.role === 2) {
       const { users } = this.props;
       if (!users.length) {
-        this.props.fetchUsers();
+        this.props.fetchUsers(this.props.authToken);
       }
     }
   }
@@ -101,7 +101,7 @@ export class TimezonesPage extends Component {
     this.setState({ loading: true });
     const { timezoneToDeleteById } = this.state;
     try {
-      await this.props.deleteTimezone(timezoneToDeleteById);
+      await this.props.deleteTimezone(this.props.authToken, timezoneToDeleteById);
     } catch (err) {
       console.error('delete action failed', err);
     }
@@ -173,6 +173,7 @@ export class TimezonesPage extends Component {
 
     if (selectedTimezoneEntity) {
       await this.props.updateTimezone(
+        this.props.authToken,
         selectedTimezoneEntity._id, {
           ...selectedTimezoneEntity,
           ...newTimezoneData,
@@ -180,7 +181,9 @@ export class TimezonesPage extends Component {
         },
       );
     } else {
-      await this.props.createTimezone({ ...newTimezoneData, userId: userTargetId });
+      await this.props.createTimezone(
+        this.props.authToken, { ...newTimezoneData, userId: userTargetId },
+      );
     }
 
     const { error } = this.props;
@@ -223,7 +226,7 @@ export class TimezonesPage extends Component {
   async refreshTimezoneList() {
     // todo add jwt here as well
     const { nameFilter, userTargetId: userId } = this.state;
-    await this.props.fetchTimezones(null, { userId, nameFilter });
+    await this.props.fetchTimezones(this.props.authToken, { userId, nameFilter });
   }
 
   renderTimezoneFormModal() {
@@ -394,6 +397,7 @@ TimezonesPage.propTypes = {
   fetchUsers: PropTypes.func.isRequired,
   clearTimezoneError: PropTypes.func.isRequired,
   error: PropTypes.string,
+  authToken: PropTypes.string.isRequired,
 };
 
 export default connect(
@@ -403,6 +407,7 @@ export default connect(
     timezones: state.timezones.timezones,
     currentUser: state.users.currentUser,
     users: state.users.users,
+    authToken: state.auth.token,
   }),
   dispatch => bindActionCreators({
     createTimezone,

@@ -14,12 +14,24 @@ import { SET_AUTH_TOKEN } from './domain/auth/actions';
 
 import './client.scss';
 
-const token = cookies.get('jwt');
+let token = cookies.get('jwt');
 
 const store = configureStore();
 store.dispatch({
   type: SET_AUTH_TOKEN,
   token,
+});
+
+store.subscribe(() => {
+  const auth = store.getState().auth;
+  if (auth.token !== token) {
+    token = auth.token;
+    if (token) {
+      cookies.set('jwt', token);
+    } else {
+      cookies.remove('jwt');
+    }
+  }
 });
 
 // import './styles/index.scss';

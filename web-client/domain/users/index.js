@@ -1,5 +1,4 @@
 import axios from 'axios';
-import cookies from 'js-cookie';
 import { client } from 'config';
 
 import {
@@ -22,7 +21,7 @@ const fetchUsers = accessToken => async (dispatch) => {
     type: USERS_OPERATION_START,
   });
 
-  const jwt = accessToken || cookies.get('jwt');
+  const jwt = accessToken;
   const authOptions = {
     headers: {
       'x-access-token': jwt,
@@ -66,7 +65,7 @@ const fetchMe = accessToken => async (dispatch) => {
     type: USERS_OPERATION_START,
   });
 
-  const jwt = accessToken || cookies.get('jwt');
+  const jwt = accessToken;
   const authOptions = {
     headers: {
       'x-access-token': jwt,
@@ -109,12 +108,12 @@ export { fetchMe };
  * either for current user or for another user, with or without filters
  * and pagination
  */
-const createUser = userData => async (dispatch) => {
+const createUser = (accessToken, userData) => async (dispatch) => {
   dispatch({
     type: USERS_OPERATION_START,
   });
 
-  const jwt = cookies.get('jwt');
+  const jwt = accessToken;
   const authOptions = {
     headers: {
       'x-access-token': jwt,
@@ -157,12 +156,12 @@ export { createUser };
 /**
  * Deletes a timezone. Assumes api checks roles and priviledges
  */
-const deleteUser = userId => async (dispatch) => {
+const deleteUser = (accessToken, userId) => async (dispatch) => {
   dispatch({
     type: USERS_OPERATION_START,
   });
 
-  const jwt = cookies.get('jwt');
+  const jwt = accessToken;
   const authOptions = {
     headers: {
       'x-access-token': jwt,
@@ -204,12 +203,12 @@ export { deleteUser };
  * Updates a timezone identified by id. Assumes roles and priviledges
  * are checked by the api.
  */
-const updateUser = (userId, patchPayload) => async (dispatch) => {
+const updateUser = (accessToken, userId, patchPayload) => async (dispatch) => {
   dispatch({
     type: USERS_OPERATION_START,
   });
 
-  const jwt = cookies.get('jwt');
+  const jwt = accessToken;
   const authOptions = {
     headers: {
       'x-access-token': jwt,

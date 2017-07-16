@@ -46,7 +46,7 @@ export class UsersPage extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchUsers();
+    this.props.fetchUsers(this.props.accessToken);
   }
 
   setRef(key, el) {
@@ -97,10 +97,12 @@ export class UsersPage extends Component {
 
     if (selectedUserEntity) {
       await this.props.updateUser(
-        selectedUserEntity._id, { ...selectedUserEntity, ...newUserData },
+        this.props.accessToken,
+        selectedUserEntity._id,
+        { ...selectedUserEntity, ...newUserData },
       );
     } else {
-      await this.props.createUser(newUserData);
+      await this.props.createUser(this.props.accessToken, newUserData);
     }
 
     const { error } = this.props;
@@ -111,7 +113,7 @@ export class UsersPage extends Component {
       });
     }
 
-    await this.props.fetchUsers();
+    await this.props.fetchUsers(this.props.accessToken);
 
     return this.setState({
       loading: false,
@@ -138,7 +140,7 @@ export class UsersPage extends Component {
     this.setState({ loading: true });
     const { userToDeleteById } = this.state;
     try {
-      await this.props.deleteUser(userToDeleteById);
+      await this.props.deleteUser(this.props.accessToken, userToDeleteById);
     } catch (err) {
       console.log(`User deletion failed for id ${userToDeleteById}`);
       console.error(err);
@@ -150,7 +152,7 @@ export class UsersPage extends Component {
       return this.setState({ loading: false });
     }
 
-    await this.props.fetchUsers();
+    await this.props.fetchUsers(this.props.accessToken);
 
     return this.setState({ loading: false, userToDeleteById: null, deleteModalVisible: false });
   }
@@ -292,10 +294,11 @@ UsersPage.propTypes = {
   clearUsersError: PropTypes.func.isRequired,
   error: PropTypes.string,
   users: PropTypes.arrayOf(PropTypes.object),
+  accessToken: PropTypes.string.isRequired,
 };
 
 export default connect(
-  state => state.users,
+  state => ({ ...state.users, accessToken: state.auth.token }),
   dispatch => bindActionCreators({
     fetchUsers,
     updateUser,
