@@ -1,8 +1,9 @@
 import test from 'ava';
 import supertest from 'supertest-as-promised';
+import config from 'config';
 
 import serverSetup from '../../api-server/setup';
-import * as config from '../../api-server/config';
+
 import { SUPER_ADMIN } from '../../api-server/setup/fixtures/Users';
 
 let server;

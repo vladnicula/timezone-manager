@@ -1,5 +1,6 @@
 import axios from 'axios';
 import cookie from 'js-cookie';
+import { client } from 'config';
 
 import {
   SET_USERS,
@@ -14,6 +15,7 @@ import {
   CLEAR_AUTH_TOKEN,
 } from '../auth/actions';
 
+const { API_ENDPOINT } = client;
 
 const fetchUsers = accessToken => async (dispatch) => {
   dispatch({
@@ -29,7 +31,7 @@ const fetchUsers = accessToken => async (dispatch) => {
 
   try {
     const response = await axios.get(
-      'http://localhost:3185/api/v1/user',
+      `${API_ENDPOINT}/api/v1/user`,
       authOptions,
     );
 
@@ -72,7 +74,7 @@ const fetchMe = accessToken => async (dispatch) => {
   };
   try {
     const response = await axios.get(
-      'http://localhost:3185/api/v1/user/me',
+      `${API_ENDPOINT}/api/v1/user/me`,
       authOptions,
     );
 
@@ -121,7 +123,7 @@ const createUser = userData => async (dispatch) => {
 
   try {
     await axios.post(
-      'http://localhost:3185/api/v1/user',
+      `${API_ENDPOINT}/api/v1/user`,
       userData,
       authOptions,
     );

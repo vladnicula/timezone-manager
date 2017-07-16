@@ -6,19 +6,18 @@ import apiRoutes from '../api';
 import httpLogger from './http-logger';
 import mongoConnection from './mongo-connection';
 import fixtures from './fixtures';
-import webClient from './web-client';
 
 export default async function serverSetup(config) {
   const {
     FIXTURES_ENABLED,
-    MONGO_DB_CON_STRING, DB_PROD_NAME_DEV, DB_PROD_NAME_PROD,
+    MONGO_DB_CON_STRING,
+    DB_BASE_NAME,
     JWT_SECRET,
   } = config;
 
   let mongoose;
-  const databaseName = process.env.NODE_ENV === 'production' ? DB_PROD_NAME_PROD : DB_PROD_NAME_DEV;
   try {
-    mongoose = await mongoConnection(MONGO_DB_CON_STRING, databaseName);
+    mongoose = await mongoConnection(MONGO_DB_CON_STRING, DB_BASE_NAME);
   } catch (err) {
     console.log('Error opening mongo connection\n', err);
     process.exit(1);
@@ -40,8 +39,6 @@ export default async function serverSetup(config) {
   app.use(cors());
 
   app.set('JWT_SECRET', JWT_SECRET);
-
-  webClient(app);
 
   app.use(bodyParser.json());
 

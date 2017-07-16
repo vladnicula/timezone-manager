@@ -1,10 +1,12 @@
+import config from 'config';
+
 import mongoConnection from '../api-server/setup/mongo-connection';
 import fixtures from '../api-server/setup/fixtures';
 
-import { DB_PROD_NAME_PROD, DB_PROD_NAME_DEV, MONGO_DB_CON_STRING } from '../api-server/config';
 
-const databaseName = process.env.NODE_ENV === 'production' ? DB_PROD_NAME_PROD : DB_PROD_NAME_DEV;
-mongoConnection(MONGO_DB_CON_STRING, databaseName)
+const { DB_BASE_NAME, MONGO_DB_CON_STRING } = config;
+
+mongoConnection(MONGO_DB_CON_STRING, DB_BASE_NAME)
 .then(async (mongoose) => {
   await fixtures(mongoose);
   process.exit(0);

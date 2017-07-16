@@ -1,5 +1,6 @@
 import axios from 'axios';
 import cookie from 'js-cookie';
+import { client } from 'config';
 
 import {
   SET_AUTH_TOKEN,
@@ -11,10 +12,12 @@ import {
   fetchMe,
 } from '../users/';
 
+const { API_ENDPOINT } = client;
+
 const authenticate = ({ username, password }) => async (dispatch) => {
   try {
     const response = await axios.post(
-      'http://localhost:3185/api/v1/user/authenticate',
+      `${API_ENDPOINT}/api/v1/user/authenticate`,
       { username, password },
     );
 
@@ -54,12 +57,12 @@ export { authenticate };
 const signup = ({ username, password }) => async (dispatch) => {
   try {
     await axios.post(
-      'http://localhost:3185/api/v1/user',
+      `${API_ENDPOINT}/api/v1/user`,
       { username, password },
     );
 
     const response = await axios.post(
-      'http://localhost:3185/api/v1/user/authenticate',
+      `${API_ENDPOINT}/api/v1/user/authenticate`,
       { username, password },
     );
 

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import cookie from 'js-cookie';
+import { client } from 'config';
 
 import {
   SET_TIMEZONES,
@@ -9,6 +10,8 @@ import {
   CLEAR_TIMEZONE_ERROR,
 } from './actions';
 
+
+const { API_ENDPOINT } = client;
 
 const fetchTimezones = (authToken, { userId, nameFilter }) => async (dispatch) => {
   dispatch({
@@ -37,7 +40,7 @@ const fetchTimezones = (authToken, { userId, nameFilter }) => async (dispatch) =
 
   try {
     const response = await axios.get(
-      `http://localhost:3185/api/v1/timezone${extras}`,
+      `${API_ENDPOINT}/api/v1/timezone${extras}`,
       authOptions,
     );
 
@@ -134,7 +137,7 @@ const deleteTimezone = timezoneId => async (dispatch) => {
 
   try {
     await axios.delete(
-      `http://localhost:3185/api/v1/timezone/${timezoneId}`,
+      `${API_ENDPOINT}/api/v1/timezone/${timezoneId}`,
       authOptions,
     );
 
@@ -181,7 +184,7 @@ const updateTimezone = (timezoneId, patchPayload) => async (dispatch) => {
 
   try {
     await axios.patch(
-      `http://localhost:3185/api/v1/timezone/${timezoneId}`,
+      `${API_ENDPOINT}/api/v1/timezone/${timezoneId}`,
       patchPayload,
       authOptions,
     );

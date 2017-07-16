@@ -1,5 +1,8 @@
 import path from 'path';
+import fs from 'fs';
+
 import webpack from 'webpack';
+import { client } from 'config';
 
 // import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import CleanWebpackPlugin from 'clean-webpack-plugin';
@@ -10,6 +13,8 @@ const clientBuildDestinationPath = path.resolve(__dirname, '../../dist');
 
 const SERVER_PORT = process.env.CLIENT_PORT || 3185;
 const HOST_IP = process.env.HOST_IP;
+
+fs.writeFileSync(path.resolve('./dist/config.json'), JSON.stringify({ client }));
 
 /**
  * ExtractTextPlugin will gather all css/scss output
@@ -26,6 +31,7 @@ const cleanBuildFolter = new CleanWebpackPlugin(['dist'], {
   root: path.resolve('./'),
   verbose: true,
   dry: false,
+  exclude: ['config.json'],
 });
 
 // const mainHtmlPath = path.resolve(__dirname, './templates/index.ejs');
@@ -58,6 +64,9 @@ module.exports = {
 
   resolve: {
     extensions: ['.js', '.json', '.jsx', '.css', '.scss'],
+    alias: {
+      config: path.resolve(__dirname, '../../dist/config.json'),
+    },
   },
 
   module: {
@@ -146,4 +155,5 @@ module.exports = {
       },
     }),
   ],
+
 };

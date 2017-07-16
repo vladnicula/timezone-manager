@@ -1,8 +1,9 @@
 import test from 'ava';
 import supertest from 'supertest-as-promised';
+import config from 'config';
 
 import serverSetup from '../../api-server/setup';
-import * as config from '../../api-server/config';
+
 
 import { SUPER_ADMIN, NORMAL_USER, MANAGER_USER } from '../../api-server/setup/fixtures/Users';
 import { createUserAndGetId, authUserAndGetToken, getUserDetails } from './utils';
