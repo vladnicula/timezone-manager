@@ -90,7 +90,7 @@ test.serial('Admin PATCH /api/v1/user', async (t) => {
   t.pass();
 });
 
-test.serial('Manager PATCH /api/v1/user', async (t) => {
+test.only('Manager PATCH /api/v1/user', async (t) => {
   const newUser = {
     username: 'manager-user-01-patch-test',
     password: '1234',

@@ -112,7 +112,8 @@ export default {
 
   update: async (req, res) => {
     const id = req.params.id || req.body.id;
-    const { role, username, password, newPassword } = req.body;
+    const { username, password, newPassword } = req.body;
+    const role = parseInt(req.body.role, 10);
     const { _id: authId, role: authRole } = req.decoded;
 
     const targetUser = await User.findById(id);
@@ -120,10 +121,10 @@ export default {
     /**
      * Only admins edit admins
      */
-    if (targetUser.role === 2 && authRole < 2) {
+    if ((targetUser.role === 2 || role === 2) && authRole < 2) {
       return res.status(400).json({
         status: 'error',
-        message: 'Authorisation failed. Only admins can edit admins',
+        message: 'Authorisation failed. Only admins can upgrade/edit admins',
       });
     }
 
