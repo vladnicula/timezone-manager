@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 import User from '../../models/user';
-
+import Timzone from '../../models/timezone';
 
 export default {
   listAll: async (req, res) => {
@@ -33,6 +33,9 @@ export default {
 
     if (target) {
       await target.remove();
+      await Timzone.remove({
+        userId: target._id.toString(),
+      });
       return res.json({
         status: 'ok',
       });

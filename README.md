@@ -10,9 +10,22 @@
 
 Will asume usage of yarn not npm from now on.
 
-#Development setup
-- yarn install
-- yarn start-server-dev stars the development backend server 
+#Environment setup
 
-#Production setup
-TODO
+## Required technologies
+- mongo v3.14
+- node 6.x 
+- yarn latest
+
+## Server startup
+- Start mongo and make sure it is running properly
+
+- Assure that `timezone-manager-dev` and `timezone-manager-test` are 
+available databases. An alternative is to configure default.js and test.js in
+the config folder to point to the desired databases.
+
+- Start api server via `yarn start-api-server-[dev|test]` depending on desired environment
+
+- Start web server via `yarn start-web-server-[dev|test]` depending on desired environment
+
+- Go to the location indicated by the web server log after setup is done.
