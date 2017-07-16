@@ -288,7 +288,11 @@ const reducer = (state = {}, action = {}) => {
     case CLEAR_AUTH_TOKEN:
       return {
         ...state,
-        currentUser: {},
+        currentUser: {
+          _id: '',
+          username: '',
+          role: 0,
+        },
       };
 
     case CLEAR_USERS_ERROR:
