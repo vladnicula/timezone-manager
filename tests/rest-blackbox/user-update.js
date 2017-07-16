@@ -90,7 +90,7 @@ test.serial('Admin PATCH /api/v1/user', async (t) => {
   t.pass();
 });
 
-test.only('Manager PATCH /api/v1/user', async (t) => {
+test.serial('Manager PATCH /api/v1/user', async (t) => {
   const newUser = {
     username: 'manager-user-01-patch-test',
     password: '1234',
@@ -169,7 +169,7 @@ test.serial('Manager PATCH /api/v1/user tries to change admin role or details', 
   t.pass();
 });
 
-test.serial('User PATCH /api/v1/user can update self but not role', async (t) => {
+test('User PATCH /api/v1/user can update self but not role', async (t) => {
   const newUser = {
     username: 'user-01-patcher',
     password: '1234',

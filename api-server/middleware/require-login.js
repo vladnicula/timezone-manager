@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import User from '../models/user';
 
 export default function requireLogin(req, res, next) {
   const authToken = req.headers['x-access-token'];
@@ -10,8 +11,20 @@ export default function requireLogin(req, res, next) {
           .status(401)
           .json({ status: 'error', message: 'Failed to authenticate token.' });
       }
-      req.decoded = decoded;
-      return next();
+
+      User.findById(decoded._id, (error, user) => {
+        if (error) {
+          return next(error);
+        }
+        const jsonUser = user.toJSON();
+        req.decoded = {
+          ...jsonUser,
+          _id: jsonUser._id.toString(),
+        };
+        return next();
+      });
+
+      return true;
     });
   } else {
     return res.status(400).send({

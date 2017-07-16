@@ -67,8 +67,7 @@ app.get('*', asycnRoutehandler(
 
       if (!store.getState().users.currentUser) {
         res.clearCookie('jwt');
-        res.writeHead(302, req.url);
-        return res.end();
+        return res.redirect(302, req.url);
       }
     }
 

@@ -22,11 +22,9 @@ export default {
 
   removeUser: async (req, res) => {
     const { id } = req.params;
-    const { _id: authId } = req.decoded;
-    const currentUser = await User.findById(authId);
+    const { role: authRole } = req.decoded;
     const target = await User.findById(id);
-
-    if (!currentUser || !currentUser.role || target.role > currentUser.role) {
+    if (!authRole || target.role > authRole) {
       return res.status(400).json({
         status: 'error',
         message: 'Cannot delete this user',
@@ -113,7 +111,7 @@ export default {
   update: async (req, res) => {
     const id = req.params.id || req.body.id;
     const { username, password, newPassword } = req.body;
-    const role = parseInt(req.body.role, 10);
+    const role = parseInt(req.body.role || 0, 10);
     const { _id: authId, role: authRole } = req.decoded;
 
     const targetUser = await User.findById(id);
@@ -129,12 +127,12 @@ export default {
     }
 
     if (
-      (role !== undefined && !authRole)
+      (role && !authRole)
       || (role === 2 && authRole !== 2)
     ) {
       return res.status(400).json({
         status: 'error',
-        message: 'Authorisation failed. Role operation denyed.',
+        message: 'Authorisation failed. Role operation denied.',
       });
     }
 
