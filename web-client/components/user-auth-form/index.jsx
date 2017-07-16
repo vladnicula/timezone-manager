@@ -13,10 +13,6 @@ export class UserAuthForm extends Component {
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
-  getFormData() {
-    return this.form.getFieldsValue();
-  }
-
   handleKeyUp(ev) {
     if (ev.which === 13) {
       this.handleFormSubmit();
@@ -44,6 +40,10 @@ export class UserAuthForm extends Component {
               { required: true, message: 'Please provide your username!' },
               { min: 4, message: 'username cannot be less than 4 characters long' },
               { max: 12, message: 'username cannot be more than 12 characters long' },
+              {
+                pattern: /^[A-Za-z0-9\-_]+$/,
+                message: 'username must contain only letters, numbers, "-" and "_"',
+              },
             ],
           })(
             <Input

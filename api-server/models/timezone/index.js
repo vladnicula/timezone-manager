@@ -4,13 +4,15 @@ const timezoneSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    minlength: 4,
+    minlength: 2,
+    maxlength: 24,
   },
 
   city: {
     type: String,
     required: true,
     minlength: 4,
+    maxlength: 24,
   },
 
   offset: {

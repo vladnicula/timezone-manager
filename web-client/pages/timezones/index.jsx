@@ -74,6 +74,16 @@ export class TimezonesPage extends Component {
     });
   }
 
+  getFormData() {
+    return new Promise((resolve) => {
+      this.timezoneForm.getForm().validateFields(null, {}, (errors, values) => {
+        if (!errors) {
+          return resolve(values);
+        }
+        return resolve(null);
+      });
+    });
+  }
 
   setNameFilter(ev) {
     this.setState({
@@ -148,7 +158,11 @@ export class TimezonesPage extends Component {
 
   async handleTimezoneFormSubmit() {
     const { selectedTimezoneEntity, userTargetId } = this.state;
-    const newTimezoneData = this.timezoneForm.getFormData();
+    const newTimezoneData = await this.getFormData();
+
+    if (!newTimezoneData) {
+      return;
+    }
 
     this.setState({
       loading: true,
