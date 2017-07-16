@@ -49,7 +49,6 @@ export default {
   register: async (req, res) => {
     const { username, password, role } = req.body;
     const decoded = req.decoded;
-
     if (role) {
       // see if we have decode info
       if (!decoded) {
@@ -60,7 +59,6 @@ export default {
       }
 
       // se if token is really a valid user
-      // TODO move into middleware
       const currentUser = await User.findById(decoded._id).select('_id, username, role');
 
       if (!currentUser) {

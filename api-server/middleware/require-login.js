@@ -25,7 +25,6 @@ export default function requireLogin(req, res, next) {
 
 export function prepareLogin(req, res, next) {
   const authToken = req.headers['x-access-token'];
-
   if (authToken) {
     jwt.verify(authToken, req.app.get('JWT_SECRET'), (err, decoded) => {
       if (err) {
@@ -34,6 +33,7 @@ export function prepareLogin(req, res, next) {
       req.decoded = decoded;
       return next();
     });
+  } else {
+    next();
   }
-  return next();
 }

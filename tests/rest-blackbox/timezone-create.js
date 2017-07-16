@@ -204,7 +204,7 @@ test.serial('User POST /api/v1/timezone (create new timezone) invalid data', asy
       .set('x-access-token', userAuthToken)
       .send({
         ...validPayload,
-        name: 'nam',
+        name: 'n',
       })
       .expect('Content-Type', /json/)
       .expect(400);
@@ -214,7 +214,7 @@ test.serial('User POST /api/v1/timezone (create new timezone) invalid data', asy
       .set('x-access-token', userAuthToken)
       .send({
         ...validPayload,
-        city: 'nam',
+        city: 'n',
       })
       .expect('Content-Type', /json/)
       .expect(400);

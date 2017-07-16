@@ -4,12 +4,17 @@ import supertest from 'supertest-as-promised';
 import serverSetup from '../../api-server/setup';
 import * as config from '../../api-server/config';
 
+import { authUserAndGetToken } from './utils';
+
+import { SUPER_ADMIN } from '../../api-server/setup/fixtures/Users';
+
 // TODO only run fixtures once for all test cases (in all files)
 let server;
 test.before('api server startup', async () => {
   const expressServer = await serverSetup({ ...config, FIXTURES_ENABLED: false });
   server = supertest(expressServer);
 });
+
 
 test.serial('POST /api/v1/user (create new user) /api/v1/user/authenticate (login)', async (t) => {
   const payload = {
@@ -113,3 +118,29 @@ test.serial('POST /api/v1/user (create new user) invalid username', async (t) =>
 
   t.pass();
 });
+
+
+test.serial('Admin POST /api/v1/user (create new user) with role', async (t) => {
+  const payload = {
+    username: 'vivianne',
+    password: '1234',
+    role: 1,
+  };
+
+
+  try {
+    const adminAuthToken = await authUserAndGetToken(server, SUPER_ADMIN);
+
+    await server
+      .post('/api/v1/user')
+      .set('x-access-token', adminAuthToken)
+      .send(payload)
+      .expect('Content-Type', /json/)
+      .expect(200);
+  } catch (err) {
+    t.fail(err);
+  }
+
+  t.pass();
+});
+
