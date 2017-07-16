@@ -1,5 +1,5 @@
 import axios from 'axios';
-import cookie from 'js-cookie';
+import cookies from 'js-cookie';
 import { client } from 'config';
 
 import {
@@ -23,8 +23,8 @@ const authenticate = ({ username, password }) => async (dispatch) => {
 
     const jwt = response.data.token;
 
+    cookies.set('jwt', jwt);
     await dispatch(fetchMe(jwt));
-    cookie.set('jwt', jwt);
 
     dispatch({
       type: SET_AUTH_TOKEN,
@@ -69,7 +69,7 @@ const signup = ({ username, password }) => async (dispatch) => {
     const jwt = response.data.token;
 
     await dispatch(fetchMe(jwt));
-    cookie.set('jwt', jwt);
+    cookies.set('jwt', jwt);
 
     dispatch({
       type: SET_AUTH_TOKEN,
@@ -98,7 +98,7 @@ const signup = ({ username, password }) => async (dispatch) => {
 export { signup };
 
 const logout = () => {
-  cookie.remove('jwt');
+  cookies.remove('jwt');
   return {
     type: CLEAR_AUTH_TOKEN,
   };

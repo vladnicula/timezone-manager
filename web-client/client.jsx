@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Cookies from 'js-cookie';
+import cookies from 'js-cookie';
 
 import { Provider } from 'react-redux';
 
@@ -14,7 +14,8 @@ import { SET_AUTH_TOKEN } from './domain/auth/actions';
 
 import './client.scss';
 
-const token = Cookies.get('jwt');
+const token = cookies.get('jwt');
+
 const store = configureStore();
 store.dispatch({
   type: SET_AUTH_TOKEN,

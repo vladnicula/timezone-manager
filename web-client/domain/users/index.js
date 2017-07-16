@@ -1,5 +1,5 @@
 import axios from 'axios';
-import cookie from 'js-cookie';
+import cookies from 'js-cookie';
 import { client } from 'config';
 
 import {
@@ -22,7 +22,7 @@ const fetchUsers = accessToken => async (dispatch) => {
     type: USERS_OPERATION_START,
   });
 
-  const jwt = accessToken || cookie.get('jwt');
+  const jwt = accessToken || cookies.get('jwt');
   const authOptions = {
     headers: {
       'x-access-token': jwt,
@@ -66,7 +66,7 @@ const fetchMe = accessToken => async (dispatch) => {
     type: USERS_OPERATION_START,
   });
 
-  const jwt = accessToken || cookie.get('jwt');
+  const jwt = accessToken || cookies.get('jwt');
   const authOptions = {
     headers: {
       'x-access-token': jwt,
@@ -114,7 +114,7 @@ const createUser = userData => async (dispatch) => {
     type: USERS_OPERATION_START,
   });
 
-  const jwt = cookie.get('jwt');
+  const jwt = cookies.get('jwt');
   const authOptions = {
     headers: {
       'x-access-token': jwt,
@@ -162,7 +162,7 @@ const deleteUser = userId => async (dispatch) => {
     type: USERS_OPERATION_START,
   });
 
-  const jwt = cookie.get('jwt');
+  const jwt = cookies.get('jwt');
   const authOptions = {
     headers: {
       'x-access-token': jwt,
@@ -209,7 +209,7 @@ const updateUser = (userId, patchPayload) => async (dispatch) => {
     type: USERS_OPERATION_START,
   });
 
-  const jwt = cookie.get('jwt');
+  const jwt = cookies.get('jwt');
   const authOptions = {
     headers: {
       'x-access-token': jwt,

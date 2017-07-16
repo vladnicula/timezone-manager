@@ -64,6 +64,7 @@ app.get('*', asycnRoutehandler(
       });
 
       await store.dispatch(fetchMe(jwt));
+
       if (!store.getState().users.currentUser) {
         res.clearCookie('jwt');
         res.writeHead(302, req.url);
