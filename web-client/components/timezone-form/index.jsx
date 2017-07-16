@@ -9,6 +9,11 @@ if (process.env.BROWSER) {
 const FormItem = Form.Item;
 
 function offsetValidator(number) {
+  if (!number) {
+    return {
+      error: null,
+    };
+  }
   if (number >= -13 && number <= 14) {
     return {
       validateStatus: 'success',
@@ -17,7 +22,7 @@ function offsetValidator(number) {
   }
   return {
     validateStatus: 'error',
-    error: new Error('Offset must be between -13 and 14!'),
+    error: new Error('offset must be between -13 and 14'),
   };
 }
 
@@ -80,7 +85,7 @@ export class TimezoneForm extends Component {
               { max: 24, message: 'city name must be less than 24 characters' },
               {
                 pattern: /^[A-Za-z0-9\-_ ]+$/,
-                message: 'city name can contain alhpanumeric, space and - characters',
+                message: 'city name can contain alhpanumeric, space and "-" characters',
               },
             ],
             initialValue: providedCity,
@@ -88,7 +93,7 @@ export class TimezoneForm extends Component {
             <Input
               onKeyUp={this.handleKeyUp}
               name="city-name"
-              placeholder="city Name"
+              placeholder="City Name"
             />,
           )}
         </FormItem>
@@ -96,7 +101,7 @@ export class TimezoneForm extends Component {
         <FormItem label="Timezone Offset">
           {getFieldDecorator('offset', {
             rules: [
-              { required: true, message: 'Please provide a GMT offset!' },
+              { required: true, message: 'please provide a GMT offset' },
               (rule, value, callback) => {
                 const errors = [];
                 const status = offsetValidator(value);

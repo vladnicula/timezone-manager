@@ -186,7 +186,7 @@ export default {
     if (!username || !password) {
       return res.status(400).json({
         status: 'error',
-        message: 'empty user credentials',
+        message: 'empty username or password',
       });
     }
 
@@ -197,14 +197,14 @@ export default {
     if (!matchedUser) {
       return res.status(400).json({
         status: 'error',
-        message: 'invalid user credentials',
+        message: 'invalid username',
       });
     }
 
     if (!bcrypt.compareSync(password, matchedUser.password)) {
       return res.status(400).json({
         status: 'error',
-        message: 'invalid user password',
+        message: 'invalid password',
       });
     }
 
