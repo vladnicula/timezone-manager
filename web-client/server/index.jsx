@@ -13,7 +13,8 @@ import { client } from 'config';
 
 import App from '../App';
 
-import webpackConfig from '../build/webpack.client.config.dev.js';
+import webpackDevConfig from '../build/webpack.client.config.dev.js';
+import webpackTestConfig from '../build/webpack.client.config.test.js';
 
 import pageTempalte from './template';
 
@@ -26,8 +27,8 @@ import errorHandler from './error-handler';
 const app = express();
 
 const configWebpack = () => new Promise((resolve, reject) => {
-  if (process.env.NODE_ENV !== 'production') {
-    const compiler = webpack(webpackConfig);
+  if (process.env.NODE_ENV === 'developmennt') {
+    const compiler = webpack(webpackDevConfig);
     compiler.run((err, stats) => {
       if (err || stats.hasErrors()) {
         // Handle errors here
@@ -43,6 +44,30 @@ const configWebpack = () => new Promise((resolve, reject) => {
       resolve({
         appPath,
         vendorPath,
+      });
+    });
+  } else if (process.env.NODE_ENV === 'test') {
+    const compiler = webpack(webpackTestConfig);
+    compiler.run((err, stats) => {
+      if (err || stats.hasErrors()) {
+        // Handle errors here
+        reject(err || stats.toString({ colors: true, reasons: true }));
+      }
+
+      const assets = Object.keys(stats.compilation.assets);
+      // console.log(assets);
+      const vendorPath = `dist/${assets[1]}`;
+      const appPath = `dist/${assets[0]}`;
+      const vendorCss = `dist/${assets[2]}`;
+      const clientCss = `dist/${assets[3]}`;
+
+      console.log(stats.toString({ colors: true, reasons: true }));
+
+      resolve({
+        appPath,
+        vendorPath,
+        vendorCss,
+        clientCss,
       });
     });
   }
@@ -92,6 +117,8 @@ app.get('*', asycnRoutehandler(
       serverSideContent: html,
       appBundleUrl: app.get('APP_BUNDLE_PATH'),
       vendorBundleUrl: app.get('VENDOR_BUNDLE_PATH'),
+      vendorCss: app.get('VENDOR_CSS_PATH'),
+      clientCss: app.get('CLIENT_CSS_PATH'),
       initialState: store.getState(),
     }));
     return res.end();
@@ -101,9 +128,11 @@ app.get('*', asycnRoutehandler(
 app.use(errorHandler);
 const { WEB_SERVER_PORT } = client;
 configWebpack()
-  .then(({ appPath, vendorPath }) => {
+  .then(({ appPath, vendorPath, clientCss, vendorCss }) => {
     app.set('APP_BUNDLE_PATH', appPath);
     app.set('VENDOR_BUNDLE_PATH', vendorPath);
+    app.set('VENDOR_CSS_PATH', clientCss);
+    app.set('CLIENT_CSS_PATH', vendorCss);
 
     app.listen(WEB_SERVER_PORT, () => {
       console.log(`Started universal web server ${WEB_SERVER_PORT}`);
