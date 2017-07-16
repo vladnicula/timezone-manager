@@ -45,7 +45,8 @@ export default {
   },
 
   register: async (req, res) => {
-    const { username, password, role } = req.body;
+    const { username, password } = req.body;
+    const role = parseInt(req.body.role || 0, 10);
     const decoded = req.decoded;
     if (role) {
       // see if we have decode info
@@ -66,7 +67,7 @@ export default {
         });
       }
 
-      const authRole = currentUser.role;
+      const authRole = currentUser.role.toString();
        /**
          * Only admins edit admins
          */
@@ -74,7 +75,6 @@ export default {
         return res.status(400).json({
           status: 'error',
           message: 'Logged in user cannot set that role to a new user',
-          debug: { user: currentUser.json(), requestedRole: role },
         });
       }
     }

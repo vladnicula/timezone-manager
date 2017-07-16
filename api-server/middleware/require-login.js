@@ -3,7 +3,7 @@ import User from '../models/user';
 
 export default function requireLogin(req, res, next) {
   const authToken = req.headers['x-access-token'];
-
+  req.decoded = {};
   if (authToken) {
     jwt.verify(authToken, req.app.get('JWT_SECRET'), (err, decoded) => {
       if (err) {
@@ -16,6 +16,11 @@ export default function requireLogin(req, res, next) {
         if (error) {
           return next(error);
         }
+
+        if (!user) {
+          return next();
+        }
+
         const jsonUser = user.toJSON();
         req.decoded = {
           ...jsonUser,
