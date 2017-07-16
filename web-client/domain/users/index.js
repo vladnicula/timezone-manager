@@ -171,7 +171,7 @@ const deleteUser = userId => async (dispatch) => {
 
   try {
     await axios.delete(
-      `http://localhost:3185/api/v1/user/${userId}`,
+      `${API_ENDPOINT}/api/v1/user/${userId}`,
       authOptions,
     );
 
@@ -218,7 +218,7 @@ const updateUser = (userId, patchPayload) => async (dispatch) => {
 
   try {
     await axios.patch(
-      `http://localhost:3185/api/v1/user/${userId}`,
+      `${API_ENDPOINT}/api/v1/user/${userId}`,
       patchPayload,
       authOptions,
     );
